@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Environment Agent — 生态环境 Agent</title>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link rel="apple-touch-icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="/static/style.css?v=11">
+<link rel="stylesheet" href="/static/v2.css?v=5">
+<link rel="stylesheet" href="/static/vditor/dist/index.css">
+</head>
+<body>
+<div id="app">
+  <header id="titlebar">
+    <div class="tb-left">
+      <img src="/static/environment-agent.png" alt="Environment Agent" class="tb-logo">
+      <span class="tb-title">Environment Agent</span>
+      <span class="tb-sub">— 生态环境 Agent</span>
+    </div>
+    <nav class="tb-nav">
+      <a href="#" class="nav-link active" data-view="main" onclick="showView('main')">
+        <svg viewBox="0 0 24 24" class="nav-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>主界面</a>
+      <a href="#" class="nav-link" data-view="roles" onclick="showView('roles')">
+        <svg viewBox="0 0 24 24" class="nav-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>角色体系</a>
+      <a href="#" class="nav-link" data-view="kb" onclick="showView('kb')">
+        <svg viewBox="0 0 24 24" class="nav-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>知识运维</a>
+      <a href="#" class="nav-link" data-view="v2" onclick="showView('v2')">
+        <svg viewBox="0 0 24 24" class="nav-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>V2 模块</a>
+    </nav>
+    <div class="tb-right">
+      <span id="view-title" class="view-title">主界面</span>
+      <div id="model-pill" class="model-pill" title="当前模型与连接状态">
+        <span class="pill-dot"></span>
+        <span id="top-provider">Provider -</span>
+        <span class="pill-tag" id="top-status">[--]</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="view-main">
+  <div id="layout">
+    <aside id="sidebar">
+      <section class="side-sec">
+        <div class="side-head">
+          <span class="side-ico">&#9672;</span>任务
+          <span id="task-count" class="count-pill">0</span>
+          <button id="btn-new-task" class="side-add" title="新任务">+</button>
+          <button id="btn-task-pause" class="side-add" title="暂停当前任务(保存断点)">II</button>
+          <button id="btn-task-resume" class="side-add" title="继续当前任务(从断点接着干)">&gt;</button>
+        </div>
+        <input id="task-q" class="task-search" placeholder="搜索任务...">
+        <div id="task-filter" class="filter-chips">
+          <button class="chip active" data-f="all">全部</button>
+          <button class="chip" data-f="监测">监测</button>
+          <button class="chip" data-f="报告">报告</button>
+          <button class="chip" data-f="合规">合规</button>
+          <button class="chip" data-f="起草">起草</button>
+        </div>
+        <ul id="task-list"></ul>
+      </section>
+      <section class="side-sec fold" id="sec-srch">
+        <div class="side-head fold-head"><span class="side-ico">&#9881;</span>联网搜索 <span class="chev">&#9662;</span></div>
+        <div class="rp-card fold-body">
+          <div class="k">SearXNG 引擎</div>
+          <div class="v"><span id="srch-mode" class="cat-tag cat-other">-</span> <span id="srch-ready" class="k-sub">[--]</span></div>
+          <div class="k">地址 / 端口</div>
+          <div class="v dim" id="srch-url">-</div>
+          <div class="k">进程 PID</div>
+          <div class="v dim" id="srch-pid">-</div>
+          <div class="k">最近错误</div>
+          <div class="v dim" id="srch-err">-</div>
+          <div class="srch-actions">
+            <button id="btn-srch-restart" class="btn-mini primary">重启 SearXNG</button>
+            <button id="btn-srch-refresh" class="btn-mini">刷新</button>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <main id="chat">
+      <div id="msg-list"></div>
+      <div id="composer">
+        <div id="composer-bar">
+          <span class="bar-label">模式</span>
+          <div id="mode-select" class="csel-holder bar"></div>
+          <span class="bar-label">模型</span>
+          <div id="provider-select" class="csel-holder bar"></div>
+          <span class="bar-label">推理强度</span>
+          <div id="reasoning-select" class="csel-holder bar"></div>
+          <span class="bar-label">Skill</span>
+          <div id="skill-select" class="csel-holder bar"></div>
+          <button id="btn-usage" class="cselect-btn" title="Token 与成本统计">Token</button>
+          <div id="usage-expand" class="hidden">
+            <div class="us-head">
+              <div class="us-title">
+                <b>Token 消耗明细</b>
+                <span id="usage-task-name" class="us-task"></span>
+              </div>
+            </div>
+            <div id="usage-panel" class="usage-panel"></div>
+          </div>
+        </div>
+        <div id="skill-add-form" class="hidden kb-form">
+          <input type="file" id="sk-file" accept=".md,.markdown,text/markdown" class="hidden">
+          <label for="sk-file" class="sk-file-btn">点击选择 SKILL.md 文件上传</label>
+          <textarea id="sk-body" rows="4" placeholder="或直接粘贴 SKILL.md 内容(含 front matter 名称/描述),自动识别名称"></textarea>
+          <button id="btn-skill-save" class="btn-mini primary">导入</button>
+          <div id="skill-manage" class="skill-manage"></div>
+        </div>
+        <div id="attach-row" class="hidden"></div>
+        <div id="input-row">
+          <div id="input-wrap">
+            <textarea id="input" rows="5" placeholder="输入指令,Enter 发送,Shift+Enter 换行;可拖入文件作为附件"></textarea>
+            <button id="btn-img" class="btn-img" title="添加图片附件(自动视觉理解)">图</button>
+            <input type="file" id="img-file" accept="image/*" class="hidden" multiple>
+            <button id="btn-stop" class="btn-stop hidden">停止</button>
+            <button id="btn-send" class="btn-send">发送</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside id="inspector">
+      <section class="rp-sec" id="sec-kb">
+        <div class="rp-head">知识库</div>
+        <div class="rp-card">
+          <div id="kb-stats" class="kb-stats dim">统计加载中...</div>
+          <div class="kb-tools">
+            <input id="kb-q" placeholder="检索知识库...">
+            <button id="btn-kb-search" class="btn-mini">检索</button>
+            <button id="btn-kb-hybrid" class="btn-mini" title="全文+向量+关系多路召回(RRF融合)">混合</button>
+          </div>
+          <div class="kb-actions">
+            <button id="btn-kb-add" class="btn-ghost btn-sm">+ 添加资料</button>
+            <button id="btn-kb-import" class="btn-ghost btn-sm">批量导入</button>
+            <button id="btn-kb-audit" class="btn-ghost btn-sm">健康审计</button>
+            <button id="btn-kb-export" class="btn-ghost btn-sm">导出</button>
+          </div>
+          <div id="kb-add-form" class="hidden kb-form">
+            <input id="kb-add-title" placeholder="标题">
+            <input id="kb-add-url" placeholder="来源 URL(可选)">
+            <div id="kb-add-cat" class="csel-holder"></div>
+            <textarea id="kb-add-content" placeholder="正文内容"></textarea>
+            <button id="btn-kb-save" class="btn-mini primary">保存</button>
+          </div>
+          <div id="kb-import-form" class="hidden kb-form">
+            <textarea id="kb-import-paths" placeholder="每行一个: 文档路径(文件/目录, PDF/DOCX/HTML/TXT/MD/XLSX) 或 官方网页链接(http/https, 仅 gov.cn 等正规来源)"></textarea>
+            <button id="btn-kb-import-run" class="btn-mini primary">开始导入</button>
+          </div>
+          <div id="kb-audit-box" class="hidden kb-form"></div>
+          <div id="kb-recall" class="dim kb-recall"></div>
+          <div id="kb-list"></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+  </div>
+
+  <!-- V2 角色体系查看（P10：角色由业务自动生成，此为体系总览） -->
+  <section id="view-roles" class="v2-view hidden">
+    <div class="v2-page">
+      <div class="v2-head">
+        <h1>角色体系（R1-R8 专家团 + 自定义）</h1>
+      </div>
+      <div class="dim" style="font-size:12px; margin-bottom:8px">
+        角色由业务自动生成并承担职责（R4 编制 / R5 审核 / R6 合规 / R8 核验审批等），
+        权限与职责按标准流程固定；自定义角色需经 R8 审核激活。
+      </div>
+      <div class="v2-grid" id="v2-role-grid"><div class="dim">加载中...</div></div>
+      <div class="v2-card">
+        <div class="v2-card-title">自定义角色（R8 审核激活）</div>
+        <div class="v2-form">
+          <input id="v2-role-name" placeholder="角色名称" style="min-width: 180px">
+          <input id="v2-role-domain" placeholder="领域 D1-D6（默认 D1）" style="width: 120px">
+          <button class="btn-mini primary" onclick="v2DefineRole()">定义（pending）</button>
+        </div>
+        <div id="v2-role-msg" class="dim" style="margin-top: 6px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- V2 知识运维控制台（P10：知识增长走 Agent 自动，此界面为低频人工运维入口） -->
+  <section id="view-kb" class="v2-view hidden">
+    <div class="v2-page">
+      <div class="v2-head">
+        <h1>知识运维控制台</h1>
+      </div>
+      <div class="dim" style="font-size:12px; margin-bottom:8px">
+        知识增长由 Agent 自动完成（对话 kb_save/kb_import 工具 + kb_pipeline 导入管线）；
+        本界面为低频人工运维入口：检索/导入、质量治理（质检/备份/审计/冲突/OCR/用量/SearXNG 配置）。
+      </div>
+
+      <div class="v2-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr))">
+        <div class="v2-card">
+          <div class="v2-card-title">服务状态</div>
+          <div id="v2-ocr" class="dim" style="font-size:12px">OCR 加载中...</div>
+          <div id="v2-usage" class="dim" style="font-size:12px">用量加载中...</div>
+        </div>
+        <div class="v2-card">
+          <div class="v2-card-title">SearXNG 配置</div>
+          <div id="v2-srch-cfg" class="dim" style="font-size:12px">加载中...</div>
+          <div class="v2-form" style="margin-top:6px">
+            <input id="v2-srch-url" placeholder="base_url" style="flex:1">
+            <button class="btn-mini primary" onclick="v2SaveSearchCfg()">保存</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">检索</div>
+        <div class="v2-form">
+          <input id="v2-kb-q" placeholder="关键词" style="flex:1">
+          <button class="btn-mini primary" onclick="v2KbSearch('search')">全文</button>
+          <button class="btn-mini" onclick="v2KbSearch('hybrid')">混合</button>
+          <button class="btn-mini" onclick="v2KbSearch('vector')">向量</button>
+        </div>
+        <div id="v2-kb-hits" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">批量操作</div>
+        <div class="v2-form">
+          <button class="btn-mini" onclick="v2KbBatch('interpret-batch')">批量解读查新</button>
+          <button class="btn-mini" onclick="v2KbBatch('summarize-batch')">批量摘要</button>
+          <button class="btn-mini" onclick="v2KbBackup()">手动备份</button>
+        </div>
+        <div id="v2-kb-batch-msg" class="dim" style="font-size:11px; margin-top:6px"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">运维数据</div>
+        <div class="v2-form" style="flex-wrap:wrap">
+          <button class="btn-mini" onclick="v2KbPanel('imports')">导入记录</button>
+          <button class="btn-mini" onclick="v2KbPanel('qc')">质检</button>
+          <button class="btn-mini" onclick="v2KbPanel('backups')">备份列表</button>
+          <button class="btn-mini" onclick="v2KbPanel('audit')">审计最新</button>
+          <button class="btn-mini" onclick="v2KbPanel('conflicts')">冲突</button>
+          <button class="btn-mini" onclick="v2KbPanel('memories')">收割记忆</button>
+          <button class="btn-mini" onclick="v2KbPanel('memory')">记忆管理</button>
+        </div>
+        <div id="v2-kb-panel" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">条目列表（点击展开操作）</div>
+        <div id="v2-kb-entries" class="dim">加载中...</div>
+      </div>
+      <div class="v2-card" id="v2-kb-detail" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- V2 模块总览（M13/M15/M14/M05/M07/M03/M04 全接入） -->
+  <section id="view-v2" class="v2-view hidden">
+    <div class="v2-page">
+      <div class="v2-head"><h1>V2 模块总览</h1></div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">P1 公式计算引擎（标准驱动 FormulaEngine）</div>
+        <div class="v2-form">
+          <input id="v2-calc-std" placeholder="标准号（如 GB 3838-2002）" style="width:170px">
+          <select id="v2-calc-type">
+            <option value="">计算类型</option><option>污染指数</option><option>超标倍数</option><option>均值</option>
+            <option>综合污染指数</option><option>达标判定</option><option>排放速率</option>
+          </select>
+          <input id="v2-calc-data" placeholder='参数 JSON：{"Ci":0.35,"Si":{"value":350,"unit":"ug/L"}}' style="flex:1">
+          <button class="btn-mini primary" onclick="v2Calc()">计算</button>
+          <button class="btn-mini" onclick="v2CalcFormulas()">公式库</button>
+        </div>
+        <div id="v2-calc-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M13 OERCR 学习闭环（观察→反思→结晶→审核激活→复用）</div>
+        <div class="v2-form">
+          <input id="v2-obs-task" placeholder="任务描述" style="flex:1">
+          <input id="v2-obs-domain" placeholder="领域 D1-D6" style="width:100px">
+          <select id="v2-obs-outcome" style="width:110px"><option value="partial">partial</option><option value="success">success</option><option value="failed">failed</option></select>
+          <button class="btn-mini primary" onclick="v2Observe()">1 观察</button>
+          <button class="btn-mini" onclick="v2Reflect()">2 反思</button>
+          <button class="btn-mini" onclick="v2Crystallize()">3 结晶</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <button class="btn-mini" onclick="v2Reuse()">reuse 匹配</button>
+          <button class="btn-mini" onclick="v2LearnPending()">待审技能</button>
+          <button class="btn-mini primary" onclick="v2ApproveAll()">R8 一键激活</button>
+          <span class="dim" style="font-size:11px">结晶产生 pending_review 技能，R8 激活后 reuse 才可命中</span>
+        </div>
+        <div id="v2-learn-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M15 模块流水线（对话 → ModuleBlueprint → R8 审批）</div>
+        <div class="v2-form">
+          <input id="v2-pl-conv" placeholder="流水线需求描述，如：开发一套地表水监测报告模块" style="flex:1">
+          <button class="btn-mini primary" onclick="v2PipelineRun()">run 蓝图</button>
+          <button class="btn-mini primary" onclick="v2PipelineApprove()">R8 审批</button>
+        </div>
+        <div id="v2-pl-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M07 技能执行器（SkillExecutor 硬闸门）</div>
+        <div class="v2-form">
+          <input id="v2-sk-id" placeholder="skill_id（v2_skills 或 SKILL.md）" style="flex:1">
+          <input id="v2-sk-params" placeholder="params JSON（可选）" style="flex:1">
+          <button class="btn-mini primary" onclick="v2SkillRun()">执行</button>
+        </div>
+        <div id="v2-sk-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M03 意图路由（IntentRouter）</div>
+        <div class="v2-form">
+          <input id="v2-int-text" placeholder="输入任务文本，如：对这批监测数据进行统计分析并生成报告" style="flex:1">
+          <button class="btn-mini primary" onclick="v2Intent()">分析</button>
+        </div>
+        <div id="v2-int-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M14 安全审计（SHA-256 哈希链）</div>
+        <div class="v2-form">
+          <input id="v2-au-who" placeholder="操作人（如 R4）" style="width:120px">
+          <input id="v2-au-action" placeholder="操作（如 report.generate）" style="flex:1">
+          <button class="btn-mini primary" onclick="v2AuditLog()">记录</button>
+          <button class="btn-mini" onclick="v2AuditQuery()">查询</button>
+          <button class="btn-mini" onclick="v2AuditVerify()">校验链</button>
+        </div>
+        <div id="v2-au-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M05 三层记忆（Working / Episodic / Procedural）</div>
+        <div class="v2-form">
+          <input id="v2-wm-key" placeholder="working key" style="width:140px">
+          <input id="v2-wm-val" placeholder="value" style="flex:1">
+          <button class="btn-mini" onclick="v2WmSet()">working set</button>
+          <button class="btn-mini" onclick="v2WmGet()">working get</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <input id="v2-ep-entity" placeholder="entity（项目名）" style="width:140px">
+          <input id="v2-ep-event" placeholder="事件" style="flex:1">
+          <button class="btn-mini" onclick="v2EpiAdd()">episodic add</button>
+          <button class="btn-mini" onclick="v2EpiQuery()">episodic 检索</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <button class="btn-mini" onclick="v2ProcList()">procedural 技能库</button>
+        </div>
+        <div id="v2-mem-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G2 动态子代理（按角色派生子代理后台执行子任务，回收结果）</div>
+        <div class="v2-form">
+          <select id="v2-sub-role" class="cselect" style="width:110px">
+            <option value="R1">R1 接待</option><option value="R2" selected>R2 检索</option>
+            <option value="R3">R3 计算</option><option value="R4">R4 编制</option>
+            <option value="R5">R5 审核</option><option value="R6">R6 合规</option>
+            <option value="R7">R7 分析</option><option value="R8">R8 知识管理</option>
+          </select>
+          <input id="v2-sub-task" placeholder="子任务：检索该项目全部水质标准限值" style="flex:1">
+          <button class="btn-mini primary" onclick="v2SubSpawn()">派生</button>
+          <button class="btn-mini" onclick="v2SubCollect()">回收</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <input id="v2-sub-id" placeholder="sub_id（spawn 返回）" style="width:220px">
+          <button class="btn-mini" onclick="v2SubList()">运行中</button>
+          <button class="btn-mini" onclick="v2SubParallel()">并行起草(3)</button>
+        </div>
+        <div id="v2-sub-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G7 MCP 双向（EA 作为 MCP server：外部 Agent 可调用本系统工具）</div>
+        <div class="v2-form">
+          <button class="btn-mini primary" onclick="v2McpList()">MCP 工具清单</button>
+          <button class="btn-mini" onclick="v2McpCall()">调用工具</button>
+          <select id="v2-mcp-tool" class="cselect" style="width:150px">
+            <option value="kb_lookup">kb_lookup</option>
+            <option value="calc_formula">calc_formula</option>
+            <option value="kb_hybrid">kb_hybrid</option>
+          </select>
+          <input id="v2-mcp-args" placeholder='参数JSON {"query":"GB 3838","top_n":2}' style="flex:1">
+        </div>
+        <div id="v2-mcp-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G6 多模态输入（图片视觉理解：VLM 直读优先 / RapidOCR 兜底）</div>
+        <div class="v2-form">
+          <input id="v2-vision-path" placeholder="图片路径（对话区"图"按钮上传后可得）" style="flex:1">
+          <input id="v2-vision-q" placeholder="问题（可选）：识别表格中的监测数据" style="flex:1">
+          <button class="btn-mini primary" onclick="v2VisionRun()">分析</button>
+          <button class="btn-mini" onclick="v2VisionSupported()">能力检测</button>
+        </div>
+        <div id="v2-vision-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G8 技能市场（本地技能目录 + 导出 zip + 导入进 P9 待审）</div>
+        <div class="v2-form">
+          <input id="v2-mkt-key" placeholder="技能 id / key（如 sk-tst-001 或 file:xxx）" style="flex:1">
+          <button class="btn-mini primary" onclick="v2MktList()">技能目录</button>
+          <button class="btn-mini" onclick="v2MktBrowse()">详情</button>
+          <button class="btn-mini" onclick="v2MktExport()">导出 zip</button>
+          <button class="btn-mini" onclick="v2MktStats()">统计</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <input id="v2-mkt-zip" placeholder="zip 完整路径（导入后进 P9 待审，R8 审批激活）" style="flex:1">
+          <button class="btn-mini" onclick="v2MktImport()">导入</button>
+        </div>
+        <div id="v2-mkt-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G5 记忆知识图谱（实体关系 + 事实/知识/画像/技能联动 + 决策痕迹）</div>
+        <div class="v2-form">
+          <input id="v2-graph-entity" placeholder="实体：项目名 / 标准号 / 指标 / 企业" style="flex:1">
+          <button class="btn-mini primary" onclick="v2GraphQuery()">图谱展开</button>
+          <button class="btn-mini" onclick="v2GraphLinkFacts()">从事实建图</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <input id="v2-graph-a" placeholder="实体A" style="width:130px">
+          <input id="v2-graph-rel" placeholder="关系" style="width:90px">
+          <input id="v2-graph-b" placeholder="实体B" style="width:130px">
+          <button class="btn-mini" onclick="v2GraphAdd()">添加关系</button>
+          <button class="btn-mini" onclick="v2GraphExtract()">抽取实体</button>
+        </div>
+        <div id="v2-graph-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">M04 工具注册表（ToolRegistry 双轨）</div>
+        <div class="v2-form">
+          <select id="v2-tool-cap"><option value="">全部</option><option value="kb">kb</option><option value="web">web</option><option value="memory">memory</option><option value="skill">skill</option><option value="report">report</option><option value="misc">misc</option></select>
+          <button class="btn-mini primary" onclick="v2ToolsList()">列出工具</button>
+        </div>
+        <div class="v2-form" style="margin-top:6px">
+          <input id="v2-tool-id" placeholder="tool_id（从列表选）" style="flex:1">
+          <input id="v2-tool-params" placeholder="params JSON（可选）" style="flex:1">
+          <button class="btn-mini" onclick="v2ToolsExec()">执行</button>
+        </div>
+        <div id="v2-tools-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">P6 数据接入（国家公开 API 适配器，失败降级离线）</div>
+        <div class="v2-form">
+          <select id="v2-pub-source" style="min-width:260px"><option value="">选择数据源</option></select>
+          <input id="v2-pub-param" placeholder="参数：city=北京 / code=GB 3838-2002 / keyword=排污许可" style="flex:1">
+          <button class="btn-mini primary" onclick="v2PublicFetch()">取数</button>
+          <button class="btn-mini" onclick="v2PublicSources()">刷新状态</button>
+        </div>
+        <div id="v2-pub-srcs" class="result-box hidden"></div>
+        <div id="v2-pub-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G3 链路追踪（LLM/工具/技能 span 树 + 成本耗时聚合）</div>
+        <div class="v2-form">
+          <input id="v2-trace-id" placeholder="trace_id（留空则按任务查）" style="min-width:200px">
+          <input id="v2-trace-task" placeholder="task_id（按任务查全部 trace）" style="min-width:120px">
+          <button class="btn-mini primary" onclick="v2TraceQuery()">查询</button>
+          <button class="btn-mini" onclick="v2TraceAggregate()">聚合统计</button>
+        </div>
+        <div id="v2-trace-agg" class="result-box hidden"></div>
+        <div id="v2-trace-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">G1 显式规划器（Plan-Execute：任务拆解为步骤 → 一键执行）</div>
+        <div class="v2-form">
+          <input id="v2-plan-text" placeholder="任务：生成噪声监测报告并计算超标情况" style="flex:1">
+          <button class="btn-mini primary" onclick="v2PlanRun()">生成计划</button>
+          <button class="btn-mini" onclick="v2PlanExecute()">一键执行</button>
+        </div>
+        <div id="v2-plan-out" class="result-box hidden"></div>
+      </div>
+
+      <div class="v2-card">
+        <div class="v2-card-title">P9 待审核中心（唯一人工闸门：技能 R8 激活 / 模块蓝图审批）</div>
+        <div class="v2-form">
+          <select id="v2-rev-type">
+            <option value="">全部类型</option>
+            <option value="skill">技能</option>
+            <option value="blueprint">模块蓝图</option>
+          </select>
+          <select id="v2-rev-status">
+            <option value="">全部状态</option>
+            <option value="pending_review">pending_review</option>
+            <option value="pending_r8_review">pending_r8_review</option>
+          </select>
+          <button class="btn-mini primary" onclick="v2RevList()">加载待审</button>
+          <button class="btn-mini primary" onclick="v2RevApproveAll()">一键批量批准</button>
+        </div>
+        <div id="v2-rev-out" class="result-box hidden"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="modal-overlay" class="hidden">
+  <div id="modal">
+    <div class="modal-head"><b>Provider 管理</b><button id="btn-modal-close">x</button></div>
+    <div id="provider-list"></div>
+    <div class="preset-row-label">预设</div>
+    <div id="preset-row"></div>
+    <div class="pf-form">
+      <input id="pf-id" type="hidden">
+      <input id="pf-name" placeholder="名称">
+      <div id="pf-kind" class="csel-holder"></div>
+      <div id="pf-reasoning" class="csel-holder"></div>
+      <input id="pf-model" placeholder="模型,如 deepseek-chat">
+      <input id="pf-base" placeholder="Base URL">
+      <input id="pf-key" placeholder="API Key">
+      <div id="pf-result" class="dim"></div>
+      <div class="pf-btns">
+        <button id="btn-pf-test" class="btn-mini">测试连接</button>
+        <button id="btn-pf-save" class="btn-mini primary">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ui-dialog" class="hidden">
+  <div class="dlg-box">
+    <div class="dlg-title"></div>
+    <div class="dlg-msg"></div>
+    <input class="dlg-input hidden" autocomplete="off">
+    <div class="dlg-btns">
+      <button class="btn-mini primary dlg-ok">确定</button>
+      <button class="btn-mini dlg-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 任务输出文件夹面板: 每个任务自动生成的输出目录, 存放对话导出与工具输出 -->
+<div id="out-panel" class="hidden">
+  <div class="out-box">
+    <div class="out-head">
+      <div class="out-title">任务输出文件夹</div>
+      <div class="out-sub" id="out-sub"></div>
+      <div class="out-actions">
+        <button class="btn-mini" id="btn-out-open">打开文件夹</button>
+        <button class="btn-mini" id="btn-out-refresh">刷新</button>
+        <button class="btn-mini" id="btn-out-close">关闭</button>
+      </div>
+    </div>
+    <div class="out-body">
+      <div class="out-files" id="out-files"></div>
+      <div class="out-preview" id="out-preview">
+        <div class="out-preview-tip">点击左侧文件查看内容</div>
+        <pre class="out-preview-pre hidden"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="hidden"></div>
+<script src="/static/vditor/dist/index.min.js"></script>
+<script src="/static/vditor/dist/method.min.js"></script>
+<script src="/static/app.js?v=15"></script>
+<script src="/static/app_v2.js?v=1"></script>
+</body>
+</html>

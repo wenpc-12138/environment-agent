@@ -1,0 +1,87 @@
+{
+  "name": "acceptance-report-team",
+  "version": "1.0.0",
+  "description": "A team of specialists that compiles Chinese environmental acceptance reports and independently audits them, producing graded P0/P1/P2 issue lists.",
+  "author": {
+    "name": "lalala",
+    "email": "lalala@local"
+  },
+  "agents": [
+    "./agents/acceptance-report-team-team-lead.md",
+    "./agents/acceptance-report-compiler.md",
+    "./agents/acceptance-report-auditor.md"
+  ],
+  "skills": [
+    "./skills/ep-acceptance-report",
+    "./skills/ep-acceptance-review"
+  ],
+
+  "expertType": "team",
+  "agentName": "acceptance-report-team-team-lead",
+  "teamInfo": {
+    "leadAgent": "acceptance-report-team-team-lead",
+    "memberAgents": ["acceptance-report-compiler", "acceptance-report-auditor"]
+  },
+
+  "displayName": {
+    "en": "Acceptance Report Team",
+    "zh": "验收报告编制审核专家团"
+  },
+  "profession": {
+    "en": "Acceptance Report Team",
+    "zh": "验收报告编制审核专家团"
+  },
+  "displayDescription": {
+    "en": "Compiles environmental acceptance reports and independently audits them: verifies image insertion, format compliance, and content consistency, then outputs graded revision opinions.",
+    "zh": "编制竣工环保验收报告并独立审核，核对图片插入、格式规范与内容一致性，输出分级问题清单与修改建议。"
+  },
+  "avatar": "avatars/team.png",
+  "categoryId": "11-SecurityCompliance",
+  "defaultInitPrompt": {
+    "zh": "帮我编制并审核一份竣工环保验收报告，从资料收集、生成 Word 到出具审核意见，全流程走一遍。",
+    "en": "Compile and audit an environmental acceptance report end-to-end, from material collection and Word generation to a review opinion."
+  },
+  "plugin": "acceptance-report-team",
+  "tags": [
+    { "en": "acceptance report compile", "zh": "验收报告编制" },
+    { "en": "independent audit", "zh": "独立审核闭环" },
+    { "en": "image-text QC", "zh": "图文质控" }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Compile and audit an environmental acceptance report end-to-end, from material collection and Word generation to a review opinion.",
+      "zh": "帮我编制并审核一份竣工环保验收报告，从资料收集、生成 Word 到出具审核意见，全流程走一遍。"
+    },
+    {
+      "en": "Use the team SOP: have the compiler generate the report with ep-acceptance-report, then have the auditor review it with ep-acceptance-review.",
+      "zh": "按团队 SOP 处理：编制专员用 ep-acceptance-report 生成报告，审核专员用 ep-acceptance-review 审核并出意见单。"
+    },
+    {
+      "en": "I already have a report docx; just run the audit phase and give me the Review Opinion Note.",
+      "zh": "我已有报告 docx，只走审核环节，出《报告审核意见单》。"
+    }
+  ],
+  "members": [
+    {
+      "id": "acceptance-report-team-team-lead",
+      "displayName": { "en": "Yan Yanzhi", "zh": "严验之" },
+      "profession": { "en": "QC Director", "zh": "质控总监" },
+      "avatar": "avatars/acceptance-report-team-team-lead.png",
+      "role": "lead"
+    },
+    {
+      "id": "acceptance-report-compiler",
+      "displayName": { "en": "Zhang Chengshu", "zh": "章成书" },
+      "profession": { "en": "Report Compiler", "zh": "报告编制师" },
+      "avatar": "avatars/acceptance-report-compiler.png",
+      "role": "member"
+    },
+    {
+      "id": "acceptance-report-auditor",
+      "displayName": { "en": "He Shenwei", "zh": "何慎微" },
+      "profession": { "en": "Report Auditor", "zh": "报告审核师" },
+      "avatar": "avatars/acceptance-report-auditor.png",
+      "role": "member"
+    }
+  ]
+}

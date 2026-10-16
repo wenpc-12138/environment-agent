@@ -1,0 +1,28 @@
+flask>=3.0
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=5.0
+pywebview>=5.0
+mcp>=1.2,<2
+# ---- v2.0 M01 骨架（2026-08-06 引入；用途：统一配置 pydantic-settings、数据模型 pydantic v2、测试 pytest）----
+pydantic>=2.12,<3
+pydantic-settings>=2.10
+pytest>=8.0
+# ---- v2.0 M02 网关（2026-08-06 引入；FastAPI Web API + Typer CLI）----
+fastapi>=0.115
+typer>=0.12
+uvicorn>=0.30
+# ---- M10 报告导出（2026-08-19 引入；python-docx 用于 Word 导出，reportlab 用于 PDF）----
+python-docx>=1.1
+reportlab>=4.0
+# ---- 文档解析（kb_pipeline M2 管线必需；缺失会导致 PDF/Excel 解析为空报"文档解析无文本内容"）----
+pypdf>=4.0
+openpyxl>=3.1
+xlrd>=2.0
+# ---- 网页抓取（websearch 多级兜底链；curl_cffi 指纹模拟绕过 403，trafilatura 本地正文提取）----
+curl_cffi>=0.6
+trafilatura>=1.8
+
+
+numpy>=2.0
+sqlite-vec>=0.1.9

@@ -1,0 +1,190 @@
+/* v2.0 功能页样式（复用 style.css 生态主题变量，M16 增量集成） */
+
+/* ---- 顶栏导航 ---- */
+#titlebar { display: flex; align-items: center; gap: 20px; }
+.tb-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.view-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--green-deep);
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px 10px;
+}
+.ws-ind { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+.ws-ind.on { color: var(--green); font-weight: 700; }
+
+/* 视图切换平滑过渡 */
+#view-main, .v2-view { animation: view-fade 0.18s ease; }
+@keyframes view-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.tb-nav { display: flex; gap: 4px; }
+.nav-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.nav-ico { width: 14px; height: 14px; opacity: .85; }
+.nav-link:hover { color: var(--blue); background: var(--blue-soft); }
+.nav-link.active {
+  color: var(--green-deep);
+  background: var(--green-soft);
+  border-color: var(--border);
+  font-weight: 600;
+}
+
+/* ---- 顶栏 model-pill（参考设计：绿点 + 模型名 + OK 标记） ---- */
+.model-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12px; color: var(--text);
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 10px;
+  box-shadow: var(--shadow);
+}
+.pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+.pill-tag {
+  font-size: 10px; letter-spacing: .3px;
+  color: var(--green-deep); background: var(--green-soft);
+  border-radius: 9px; padding: 1px 7px;
+}
+#top-status.pill-tag.disconnected { color: var(--text-dim); background: var(--panel-2); }
+
+/* ---- 唯一 UI 布局（#layout 的高度链补全） ---- */
+#view-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.v2-view {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ---- V2 页面 ---- */
+.v2-page {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.v2-head { display: flex; align-items: baseline; gap: 12px; }
+.v2-head h1 { font-size: 16px; letter-spacing: 1px; color: var(--text); }
+.v2-note { font-size: 11px; color: var(--text-dim); }
+.v2-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.v2-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.v2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+}
+.v2-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* ---- 角色卡片 ---- */
+.role-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.role-head { display: flex; align-items: center; gap: 8px; }
+.role-id {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--green-deep);
+  background: var(--green-soft);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+.role-domain { margin-left: auto; }
+.role-sec { display: flex; flex-direction: column; gap: 4px; }
+.role-sec .rp-head { font-size: 11px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.status-pending { color: var(--warn); }
+.status-active { color: var(--green); }
+.status-rejected { color: var(--red); }
+
+/* ---- 报告页 ---- */
+.report-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 10px;
+}
+.report-layout .v2-card { min-height: 0; }
+.report-editor { width: 100%; min-height: 320px; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; }
+.pipeline-btns { display: flex; flex-direction: column; gap: 6px; }
+.result-box {
+  background: var(--panel-2);
+  border: 1px dashed var(--border-2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-top: 6px;
+  white-space: pre-wrap;
+}
+.issue-item { padding: 4px 0; border-bottom: 1px dashed var(--border); font-size: 12px; }
+.sev-P0 { color: var(--red); font-weight: 700; }
+.sev-P1 { color: var(--warn); font-weight: 700; }
+.sev-P2 { color: var(--text-dim); }
+.violation-pass { color: var(--green); font-weight: 700; }
+.violation-fail { color: var(--red); font-weight: 700; }
+.claim-item { font-size: 12px; padding: 3px 0; }
+.ground-spans { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.span-chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border-2);
+  background: var(--panel);
+  color: var(--text-dim);
+}
+
+/* ---- 工作流页 ---- */
+.sm-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.sm-node {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-2);
+  background: var(--panel);
+  color: var(--text);
+}
+.sm-node.current { border-color: var(--green); background: var(--green-soft); color: var(--green-deep); font-weight: 700; }
+.sm-arrow { color: var(--text-dim); font-size: 12px; }
+.event-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.ws-log { padding: 4px 0; border-bottom: 1px dashed var(--border); font-size: 12px; display: flex; gap: 8px; align-items: center; }
+
+

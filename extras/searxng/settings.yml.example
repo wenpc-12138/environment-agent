@@ -1,0 +1,40 @@
+# 生态Agent - SearXNG 配置模板
+# 复制为 config/settings.yml 并替换 secret_key(双击 start-searxng.bat 自动完成)
+use_default_settings: true
+
+server:
+  secret_key: "REPLACE_WITH_SECRET_KEY"   # 必填: 随机 32 位 hex, 防止 session 伪造
+  limiter: false                           # 关闭速率限制, 避免 Agent 高频搜索被限
+
+search:
+  safe_search: 0                           # 0=关闭安全搜索
+  autocomplete: ""
+  default_lang: "zh-CN"                    # 默认中文
+  languages: ["zh-CN", "zh-HK", "zh-TW", "en"]
+  formats:
+    - html
+    - json                              # 启用 JSON API (Agent 依赖)
+
+ui:
+  default_locale: "zh"
+  results_on_new_tab: true
+
+outgoing:
+  request_timeout: 15                    # 与 Agent 端配置一致
+
+# 常用中文结果引擎(可自行增删)
+engines:
+  - name: google
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: baidu
+    disabled: false
+  - name: sogou
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: bing news
+    disabled: true

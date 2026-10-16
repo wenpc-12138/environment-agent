@@ -1,0 +1,4399 @@
+[
+  {
+    "id": "std-index-single",
+    "name": "单项污染指数",
+    "standard": "GB 3838-2002",
+    "clause": "附录 A",
+    "calc_type": "污染指数",
+    "desc": "Pi = Ci / Si（≤1 达标）",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "实测浓度",
+          "浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "实测浓度"
+      },
+      {
+        "name": "Si",
+        "alias": [
+          "标准限值",
+          "标准值"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "标准限值"
+      }
+    ],
+    "expr": "Ci / Si",
+    "output": {
+      "name": "Pi",
+      "unit": "-",
+      "label": "单项污染指数"
+    }
+  },
+  {
+    "id": "exceedance-multiple",
+    "name": "超标倍数",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "超标倍数",
+    "desc": "K = Ci/Si - 1（>0 超标）",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "实测浓度",
+          "浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "实测浓度"
+      },
+      {
+        "name": "Si",
+        "alias": [
+          "标准限值",
+          "标准值"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "标准限值"
+      }
+    ],
+    "expr": "Ci / Si - 1",
+    "output": {
+      "name": "K",
+      "unit": "-",
+      "label": "超标倍数"
+    }
+  },
+  {
+    "id": "arithmetic-mean",
+    "name": "算术均值",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "均值",
+    "desc": "X = sum(Ci) / len(Ci)",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "数据",
+          "浓度序列"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "数据序列"
+      }
+    ],
+    "expr": "sum(Ci) / len(Ci)",
+    "output": {
+      "name": "X",
+      "unit": "mg/L",
+      "label": "均值"
+    }
+  },
+  {
+    "id": "nemean-index",
+    "name": "内梅罗综合污染指数",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "综合污染指数",
+    "desc": "P = sqrt((max(Ci)^2 + mean(Ci)^2) / 2)",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "单项指数",
+          "指数序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "单项指数序列"
+      }
+    ],
+    "expr": "sqrt((max(Ci)**2 + (sum(Ci)/len(Ci))**2)/2)",
+    "output": {
+      "name": "P",
+      "unit": "-",
+      "label": "内梅罗综合污染指数"
+    }
+  },
+  {
+    "id": "compliance-check",
+    "name": "达标判定",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "达标判定",
+    "desc": "Ci <= Si 则达标（1 达标 / 0 超标）",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "实测浓度",
+          "浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "实测浓度"
+      },
+      {
+        "name": "Si",
+        "alias": [
+          "标准限值",
+          "标准值"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "标准限值"
+      }
+    ],
+    "expr": "1 if Ci <= Si else 0",
+    "output": {
+      "name": "pass",
+      "unit": "-",
+      "label": "是否达标(1/0)"
+    }
+  },
+  {
+    "id": "emission-rate",
+    "name": "排放速率",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "排放速率",
+    "desc": "Q = C * V / 1000（mg/m3 * m3/h -> kg/h）",
+    "inputs": [
+      {
+        "name": "C",
+        "alias": [
+          "排放浓度",
+          "浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "排放浓度"
+      },
+      {
+        "name": "V",
+        "alias": [
+          "风量",
+          "流量",
+          "排气量"
+        ],
+        "unit": "m3/h",
+        "required": true,
+        "label": "排气量"
+      }
+    ],
+    "expr": "C * V / 1000",
+    "output": {
+      "name": "Q",
+      "unit": "kg/h",
+      "label": "排放速率"
+    }
+  },
+  {
+    "id": "std-uncertainty-a",
+    "name": "A类标准不确定度",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012",
+    "calc_type": "不确定度",
+    "desc": "u = s / sqrt(n)，s 为 n 次重复测量的样本标准偏差",
+    "inputs": [
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差",
+          "标准差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "测量次数",
+          "重复次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量次数"
+      }
+    ],
+    "expr": "s / sqrt(n)",
+    "output": {
+      "name": "u",
+      "unit": "-",
+      "label": "A类标准不确定度"
+    }
+  },
+  {
+    "id": "combined-uncertainty",
+    "name": "合成标准不确定度",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012",
+    "calc_type": "不确定度",
+    "desc": "uc = sqrt(sum(ui^2))，ui 为各不确定度分量（不相关时）",
+    "inputs": [
+      {
+        "name": "ui",
+        "alias": [
+          "不确定度分量",
+          "分量"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "不确定度分量序列"
+      }
+    ],
+    "expr": "sqrt(sum([u*u for u in ui]))",
+    "output": {
+      "name": "uc",
+      "unit": "-",
+      "label": "合成标准不确定度"
+    }
+  },
+  {
+    "id": "expanded-uncertainty",
+    "name": "扩展不确定度",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012",
+    "calc_type": "不确定度",
+    "desc": "U = k * uc，k 包含因子（默认 2，95% 置信）",
+    "inputs": [
+      {
+        "name": "uc",
+        "alias": [
+          "合成标准不确定度",
+          "合成不确定度"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "合成标准不确定度"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "包含因子"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "包含因子"
+      }
+    ],
+    "expr": "k * uc",
+    "output": {
+      "name": "U",
+      "unit": "-",
+      "label": "扩展不确定度"
+    }
+  },
+  {
+    "id": "relative-uncertainty",
+    "name": "相对标准不确定度",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012",
+    "calc_type": "不确定度",
+    "desc": "urel = u / x * 100（%）",
+    "inputs": [
+      {
+        "name": "u",
+        "alias": [
+          "标准不确定度",
+          "不确定度"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准不确定度"
+      },
+      {
+        "name": "x",
+        "alias": [
+          "测量值",
+          "结果"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量结果"
+      }
+    ],
+    "expr": "u / x * 100",
+    "output": {
+      "name": "urel",
+      "unit": "%",
+      "label": "相对标准不确定度"
+    }
+  },
+  {
+    "id": "spike-recovery",
+    "name": "加标回收率",
+    "standard": "通用",
+    "clause": "HJ 168-2020",
+    "calc_type": "回收率",
+    "desc": "R = (C1 - C0) / Cs * 100（%），C1 加标样测定值、C0 原样测定值、Cs 加标量",
+    "inputs": [
+      {
+        "name": "C1",
+        "alias": [
+          "加标样测定值",
+          "加标测定值"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "加标样测定值"
+      },
+      {
+        "name": "C0",
+        "alias": [
+          "原样测定值",
+          "样品测定值"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "原样测定值"
+      },
+      {
+        "name": "Cs",
+        "alias": [
+          "加标量"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "加标量"
+      }
+    ],
+    "expr": "(C1 - C0) / Cs * 100",
+    "output": {
+      "name": "R",
+      "unit": "%",
+      "label": "加标回收率"
+    }
+  },
+  {
+    "id": "sample-stddev",
+    "name": "样本标准偏差",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "精密度",
+    "desc": "s = sqrt(sum((xi - xbar)^2) / (n - 1))，n 次测量",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据",
+          "测量序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量数据序列"
+      }
+    ],
+    "expr": "sqrt(sum([(x - (sum(xi)/len(xi)))**2 for x in xi]) / (len(xi) - 1))",
+    "output": {
+      "name": "s",
+      "unit": "-",
+      "label": "样本标准偏差"
+    }
+  },
+  {
+    "id": "rsd",
+    "name": "相对标准偏差",
+    "standard": "通用",
+    "clause": "HJ 168-2020",
+    "calc_type": "精密度",
+    "desc": "RSD = s / xbar * 100（%）",
+    "inputs": [
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差",
+          "标准差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "xbar",
+        "alias": [
+          "均值",
+          "平均值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      }
+    ],
+    "expr": "s / xbar * 100",
+    "output": {
+      "name": "RSD",
+      "unit": "%",
+      "label": "相对标准偏差"
+    }
+  },
+  {
+    "id": "relative-deviation",
+    "name": "平行样相对偏差",
+    "standard": "通用",
+    "clause": "HJ 168-2020",
+    "calc_type": "精密度",
+    "desc": "RD = |x1 - x2| / ((x1 + x2)/2) * 100（%）",
+    "inputs": [
+      {
+        "name": "x1",
+        "alias": [
+          "平行样1",
+          "第一次"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "平行样 1"
+      },
+      {
+        "name": "x2",
+        "alias": [
+          "平行样2",
+          "第二次"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "平行样 2"
+      }
+    ],
+    "expr": "abs(x1 - x2) / ((x1 + x2) / 2) * 100",
+    "output": {
+      "name": "RD",
+      "unit": "%",
+      "label": "相对偏差"
+    }
+  },
+  {
+    "id": "mdl",
+    "name": "方法检出限",
+    "standard": "通用",
+    "clause": "HJ 168-2020",
+    "calc_type": "检出限",
+    "desc": "MDL = t * s，t 为 99% 置信度 t 分布值（n-1 自由度），s 为 n 次加标测定标准偏差",
+    "inputs": [
+      {
+        "name": "t",
+        "alias": [
+          "t值",
+          "t分布值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "t 值"
+      },
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差",
+          "标准差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      }
+    ],
+    "expr": "t * s",
+    "output": {
+      "name": "MDL",
+      "unit": "-",
+      "label": "方法检出限"
+    }
+  },
+  {
+    "id": "removal-efficiency",
+    "name": "处理效率（去除率）",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "去除率",
+    "desc": "eta = (Cin - Cout) / Cin * 100（%）",
+    "inputs": [
+      {
+        "name": "Cin",
+        "alias": [
+          "进口浓度",
+          "进水浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "进口浓度"
+      },
+      {
+        "name": "Cout",
+        "alias": [
+          "出口浓度",
+          "出水浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "出口浓度"
+      }
+    ],
+    "expr": "(Cin - Cout) / Cin * 100",
+    "output": {
+      "name": "eta",
+      "unit": "%",
+      "label": "处理效率"
+    }
+  },
+  {
+    "id": "flue-gas-corrected",
+    "name": "烟气折算浓度",
+    "standard": "通用",
+    "clause": "HJ/T 397-2007",
+    "calc_type": "折算浓度",
+    "desc": "C = Cp * alphas / alpha，Cp 实测浓度、alphas 标准过剩空气系数、alpha 实测过剩空气系数",
+    "inputs": [
+      {
+        "name": "Cp",
+        "alias": [
+          "实测浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "实测浓度"
+      },
+      {
+        "name": "alphas",
+        "alias": [
+          "标准过剩空气系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准过剩空气系数"
+      },
+      {
+        "name": "alpha",
+        "alias": [
+          "实测过剩空气系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "实测过剩空气系数"
+      }
+    ],
+    "expr": "Cp * alphas / alpha",
+    "output": {
+      "name": "C",
+      "unit": "mg/m3",
+      "label": "折算浓度"
+    }
+  },
+  {
+    "id": "noise-distance",
+    "name": "点声源距离衰减",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声预测",
+    "desc": "Lp2 = Lp1 - 20*lg(r2/r1)，几何发散衰减（自由场）",
+    "inputs": [
+      {
+        "name": "Lp1",
+        "alias": [
+          "参考点声级"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "参考点声级 dB"
+      },
+      {
+        "name": "r1",
+        "alias": [
+          "参考距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "参考距离 m"
+      },
+      {
+        "name": "r2",
+        "alias": [
+          "预测距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "预测距离 m"
+      }
+    ],
+    "expr": "Lp1 - 20 * log10(r2 / r1)",
+    "output": {
+      "name": "Lp2",
+      "unit": "dB",
+      "label": "预测声级"
+    }
+  },
+  {
+    "id": "leq",
+    "name": "等效连续A声级",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声",
+    "desc": "Leq = 10*lg( (sum(10^(Li/10))) / n )",
+    "inputs": [
+      {
+        "name": "Li",
+        "alias": [
+          "声级序列",
+          "瞬时声级"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "声级序列 dB"
+      }
+    ],
+    "expr": "10 * log10(sum([10**(l/10) for l in Li]) / len(Li))",
+    "output": {
+      "name": "Leq",
+      "unit": "dB",
+      "label": "等效连续 A 声级"
+    }
+  },
+  {
+    "id": "mixing-model",
+    "name": "河流完全混合模型",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境影响",
+    "desc": "C = (Q1*C1 + Q2*C2) / (Q1 + Q2)，上游来流与排放口混合",
+    "inputs": [
+      {
+        "name": "Q1",
+        "alias": [
+          "上游流量"
+        ],
+        "unit": "m3/s",
+        "required": true,
+        "label": "上游流量"
+      },
+      {
+        "name": "C1",
+        "alias": [
+          "上游浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "上游浓度"
+      },
+      {
+        "name": "Q2",
+        "alias": [
+          "排放流量"
+        ],
+        "unit": "m3/s",
+        "required": true,
+        "label": "排放流量"
+      },
+      {
+        "name": "C2",
+        "alias": [
+          "排放浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "排放浓度"
+      }
+    ],
+    "expr": "(Q1 * C1 + Q2 * C2) / (Q1 + Q2)",
+    "output": {
+      "name": "C",
+      "unit": "mg/L",
+      "label": "混合后浓度"
+    }
+  },
+  {
+    "id": "pollutant-load",
+    "name": "污染物排放量",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "排放量",
+    "desc": "M = C * Q * T / 1000000（t），C 浓度 mg/L、Q 流量 m3/h、T 时长 h",
+    "inputs": [
+      {
+        "name": "C",
+        "alias": [
+          "浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "浓度"
+      },
+      {
+        "name": "Q",
+        "alias": [
+          "流量"
+        ],
+        "unit": "m3/h",
+        "required": true,
+        "label": "流量 m3/h"
+      },
+      {
+        "name": "T",
+        "alias": [
+          "排放时长"
+        ],
+        "unit": "h",
+        "required": true,
+        "label": "排放时长 h"
+      }
+    ],
+    "expr": "C * Q * T / 1000000",
+    "output": {
+      "name": "M",
+      "unit": "t",
+      "label": "污染物排放量"
+    }
+  },
+  {
+    "id": "equivalent-load",
+    "name": "大气等标排放量",
+    "standard": "通用",
+    "clause": "HJ 2.2-2018",
+    "calc_type": "等标排放",
+    "desc": "Pi = Qi / Coi * 1e9，Qi 排放量 kg/h、Coi 允许浓度 mg/m3",
+    "inputs": [
+      {
+        "name": "Qi",
+        "alias": [
+          "排放量"
+        ],
+        "unit": "kg/h",
+        "required": true,
+        "label": "排放量 kg/h"
+      },
+      {
+        "name": "Coi",
+        "alias": [
+          "允许浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "允许浓度 mg/m3"
+      }
+    ],
+    "expr": "Qi / Coi * 1000000000",
+    "output": {
+      "name": "Pi",
+      "unit": "m3/h",
+      "label": "等标排放量"
+    }
+  },
+  {
+    "id": "do-saturation",
+    "name": "溶解氧饱和度",
+    "standard": "通用",
+    "clause": "HJ 506-2009",
+    "calc_type": "水环境",
+    "desc": "DOsat = DO / DOs * 100（%）",
+    "inputs": [
+      {
+        "name": "DO",
+        "alias": [
+          "实测溶解氧"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "实测溶解氧"
+      },
+      {
+        "name": "DOs",
+        "alias": [
+          "饱和溶解氧"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "饱和溶解氧"
+      }
+    ],
+    "expr": "DO / DOs * 100",
+    "output": {
+      "name": "DOsat",
+      "unit": "%",
+      "label": "溶解氧饱和度"
+    }
+  },
+  {
+    "id": "do-saturation-conc",
+    "name": "溶解氧饱和浓度（经验式）",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境",
+    "desc": "Cs = 468 / (31.6 + T)，T 为水温（℃）",
+    "inputs": [
+      {
+        "name": "T",
+        "alias": [
+          "水温"
+        ],
+        "unit": "℃",
+        "required": true,
+        "label": "水温 ℃"
+      }
+    ],
+    "expr": "468 / (31.6 + T)",
+    "output": {
+      "name": "Cs",
+      "unit": "mg/L",
+      "label": "饱和溶解氧"
+    }
+  },
+  {
+    "id": "river-1d-decay",
+    "name": "河流一维降解模型",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境影响",
+    "desc": "C = C0 * exp(-K * t)，K 降解系数（1/d）、t 迁移时间（d）",
+    "inputs": [
+      {
+        "name": "C0",
+        "alias": [
+          "初始浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "初始浓度"
+      },
+      {
+        "name": "K",
+        "alias": [
+          "降解系数"
+        ],
+        "unit": "1/d",
+        "required": true,
+        "label": "降解系数 1/d"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "迁移时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "迁移时间 d"
+      }
+    ],
+    "expr": "C0 * math.exp(-K * t)",
+    "output": {
+      "name": "C",
+      "unit": "mg/L",
+      "label": "降解后浓度"
+    }
+  },
+  {
+    "id": "dilution-ratio",
+    "name": "污水稀释比",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境影响",
+    "desc": "n = (Q1 + Q2) / Q2，Q1 上游流量、Q2 排放流量（完全混合后稀释倍数）",
+    "inputs": [
+      {
+        "name": "Q1",
+        "alias": [
+          "上游流量"
+        ],
+        "unit": "m3/s",
+        "required": true,
+        "label": "上游流量"
+      },
+      {
+        "name": "Q2",
+        "alias": [
+          "排放流量"
+        ],
+        "unit": "m3/s",
+        "required": true,
+        "label": "排放流量"
+      }
+    ],
+    "expr": "(Q1 + Q2) / Q2",
+    "output": {
+      "name": "n",
+      "unit": "-",
+      "label": "稀释比"
+    }
+  },
+  {
+    "id": "water-quality-index",
+    "name": "水质综合污染指数（等权）",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "水环境",
+    "desc": "P = sum(Pi) / len(Pi)，Pi 为各指标单项污染指数",
+    "inputs": [
+      {
+        "name": "Pi",
+        "alias": [
+          "单项指数序列",
+          "单项污染指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "单项污染指数序列"
+      }
+    ],
+    "expr": "sum(Pi) / len(Pi)",
+    "output": {
+      "name": "P",
+      "unit": "-",
+      "label": "综合污染指数"
+    }
+  },
+  {
+    "id": "water-capacity",
+    "name": "河流纳污能力（简化）",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境",
+    "desc": "W = Q * (Cs - C0)，Q 设计流量、Cs 水质目标浓度、C0 本底浓度",
+    "inputs": [
+      {
+        "name": "Q",
+        "alias": [
+          "设计流量"
+        ],
+        "unit": "m3/s",
+        "required": true,
+        "label": "设计流量"
+      },
+      {
+        "name": "Cs",
+        "alias": [
+          "目标浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "水质目标浓度"
+      },
+      {
+        "name": "C0",
+        "alias": [
+          "本底浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "本底浓度"
+      }
+    ],
+    "expr": "Q * (Cs - C0)",
+    "output": {
+      "name": "W",
+      "unit": "-",
+      "label": "纳污能力"
+    }
+  },
+  {
+    "id": "bod-decay",
+    "name": "BOD 降解计算",
+    "standard": "通用",
+    "clause": "HJ 2.3-2018",
+    "calc_type": "水环境影响",
+    "desc": "BODt = L0 * (1 - exp(-K * t))，L0 初始 BOD、K 降解系数、t 时间",
+    "inputs": [
+      {
+        "name": "L0",
+        "alias": [
+          "初始BOD"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "初始 BOD"
+      },
+      {
+        "name": "K",
+        "alias": [
+          "降解系数"
+        ],
+        "unit": "1/d",
+        "required": true,
+        "label": "降解系数 1/d"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "时间 d"
+      }
+    ],
+    "expr": "L0 * (1 - math.exp(-K * t))",
+    "output": {
+      "name": "BODt",
+      "unit": "mg/L",
+      "label": "t 时刻 BOD"
+    }
+  },
+  {
+    "id": "bod-cod-ratio",
+    "name": "BOD/COD 比值（可生化性）",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "水环境",
+    "desc": "r = BOD / COD，评价污水可生化性",
+    "inputs": [
+      {
+        "name": "BOD",
+        "alias": [
+          "BOD浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "BOD"
+      },
+      {
+        "name": "COD",
+        "alias": [
+          "COD浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "COD"
+      }
+    ],
+    "expr": "BOD / COD",
+    "output": {
+      "name": "r",
+      "unit": "-",
+      "label": "BOD/COD"
+    }
+  },
+  {
+    "id": "gaussian-plume",
+    "name": "高斯烟羽地面轴线浓度",
+    "standard": "通用",
+    "clause": "HJ 2.2-2018",
+    "calc_type": "大气预测",
+    "desc": "C = Q/(pi*u*sy*sz) * exp(-H^2/(2*sz^2))，Q 源强、u 风速、sy/sz 扩散参数、H 有效源高",
+    "inputs": [
+      {
+        "name": "Q",
+        "alias": [
+          "源强",
+          "排放源强"
+        ],
+        "unit": "g/s",
+        "required": true,
+        "label": "源强 g/s"
+      },
+      {
+        "name": "u",
+        "alias": [
+          "风速"
+        ],
+        "unit": "m/s",
+        "required": true,
+        "label": "风速 m/s"
+      },
+      {
+        "name": "sy",
+        "alias": [
+          "横向扩散参数"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "横向扩散参数"
+      },
+      {
+        "name": "sz",
+        "alias": [
+          "垂直扩散参数"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "垂直扩散参数"
+      },
+      {
+        "name": "H",
+        "alias": [
+          "有效源高"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "有效源高 m"
+      }
+    ],
+    "expr": "Q / (math.pi * u * sy * sz) * math.exp(-H**2 / (2 * sz**2))",
+    "output": {
+      "name": "C",
+      "unit": "g/m3",
+      "label": "地面轴线浓度"
+    }
+  },
+  {
+    "id": "plume-rise-holland",
+    "name": "烟羽抬升高度（霍兰德）",
+    "standard": "通用",
+    "clause": "HJ/T 397-2007",
+    "calc_type": "大气预测",
+    "desc": "dH = v*d/u * (1.5 + 2.68e-3*P*d*(Ts-Ta)/Ts)",
+    "inputs": [
+      {
+        "name": "v",
+        "alias": [
+          "排气速度"
+        ],
+        "unit": "m/s",
+        "required": true,
+        "label": "排气速度 m/s"
+      },
+      {
+        "name": "d",
+        "alias": [
+          "烟囱出口直径"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "烟囱出口直径 m"
+      },
+      {
+        "name": "u",
+        "alias": [
+          "风速"
+        ],
+        "unit": "m/s",
+        "required": true,
+        "label": "风速 m/s"
+      },
+      {
+        "name": "P",
+        "alias": [
+          "大气压"
+        ],
+        "unit": "hPa",
+        "required": true,
+        "label": "大气压 hPa"
+      },
+      {
+        "name": "Ts",
+        "alias": [
+          "烟气温度"
+        ],
+        "unit": "K",
+        "required": true,
+        "label": "烟气温度 K"
+      },
+      {
+        "name": "Ta",
+        "alias": [
+          "环境温度"
+        ],
+        "unit": "K",
+        "required": true,
+        "label": "环境温度 K"
+      }
+    ],
+    "expr": "v * d / u * (1.5 + 2.68e-3 * P * d * (Ts - Ta) / Ts)",
+    "output": {
+      "name": "dH",
+      "unit": "m",
+      "label": "烟羽抬升高度"
+    }
+  },
+  {
+    "id": "standard-gas-flow",
+    "name": "标态烟气流量换算",
+    "standard": "通用",
+    "clause": "HJ/T 397-2007",
+    "calc_type": "折算浓度",
+    "desc": "Qn = Q * 273/(273+t) * Pa/101.325，工况流量折算到标态",
+    "inputs": [
+      {
+        "name": "Q",
+        "alias": [
+          "工况流量"
+        ],
+        "unit": "m3/h",
+        "required": true,
+        "label": "工况流量 m3/h"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "烟气温度"
+        ],
+        "unit": "℃",
+        "required": true,
+        "label": "烟气温度 ℃"
+      },
+      {
+        "name": "Pa",
+        "alias": [
+          "大气压"
+        ],
+        "unit": "kPa",
+        "required": true,
+        "label": "大气压 kPa"
+      }
+    ],
+    "expr": "Q * (273 / (273 + t)) * (Pa / 101.325)",
+    "output": {
+      "name": "Qn",
+      "unit": "m3/h",
+      "label": "标态烟气流量"
+    }
+  },
+  {
+    "id": "excess-air-ratio",
+    "name": "过剩空气系数",
+    "standard": "通用",
+    "clause": "HJ/T 397-2007",
+    "calc_type": "折算浓度",
+    "desc": "alpha = 21 / (21 - O2)，O2 为实测含氧量（%）",
+    "inputs": [
+      {
+        "name": "O2",
+        "alias": [
+          "实测含氧量",
+          "含氧量"
+        ],
+        "unit": "%",
+        "required": true,
+        "label": "实测含氧量 %"
+      }
+    ],
+    "expr": "21 / (21 - O2)",
+    "output": {
+      "name": "alpha",
+      "unit": "-",
+      "label": "过剩空气系数"
+    }
+  },
+  {
+    "id": "baseline-o2",
+    "name": "基准含氧量折算浓度",
+    "standard": "通用",
+    "clause": "GB 13223-2011",
+    "calc_type": "折算浓度",
+    "desc": "C = Cp * (21 - O2b) / (21 - O2)，折算到基准含氧量",
+    "inputs": [
+      {
+        "name": "Cp",
+        "alias": [
+          "实测浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "实测浓度"
+      },
+      {
+        "name": "O2b",
+        "alias": [
+          "基准含氧量"
+        ],
+        "unit": "%",
+        "required": true,
+        "label": "基准含氧量 %"
+      },
+      {
+        "name": "O2",
+        "alias": [
+          "实测含氧量"
+        ],
+        "unit": "%",
+        "required": true,
+        "label": "实测含氧量 %"
+      }
+    ],
+    "expr": "Cp * (21 - O2b) / (21 - O2)",
+    "output": {
+      "name": "C",
+      "unit": "mg/m3",
+      "label": "折算浓度"
+    }
+  },
+  {
+    "id": "stokes-settling",
+    "name": "斯托克斯沉降速度",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "大气预测",
+    "desc": "Vs = d^2*(rp-ra)*g/(18*mu)，g=9.81",
+    "inputs": [
+      {
+        "name": "d",
+        "alias": [
+          "粒径"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "粒径 m"
+      },
+      {
+        "name": "rp",
+        "alias": [
+          "颗粒密度"
+        ],
+        "unit": "kg/m3",
+        "required": true,
+        "label": "颗粒密度 kg/m3"
+      },
+      {
+        "name": "ra",
+        "alias": [
+          "空气密度"
+        ],
+        "unit": "kg/m3",
+        "required": true,
+        "label": "空气密度 kg/m3"
+      },
+      {
+        "name": "mu",
+        "alias": [
+          "空气粘度"
+        ],
+        "unit": "Pa·s",
+        "required": true,
+        "label": "空气粘度 Pa·s"
+      }
+    ],
+    "expr": "d**2 * (rp - ra) * 9.81 / (18 * mu)",
+    "output": {
+      "name": "Vs",
+      "unit": "m/s",
+      "label": "沉降速度"
+    }
+  },
+  {
+    "id": "so2-emission",
+    "name": "燃煤SO2排放量",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "排放量",
+    "desc": "G = B * S * 1.6 * (1 - eta)，B 耗煤量(t)、S 含硫率(%)、eta 脱硫效率(0-1)",
+    "inputs": [
+      {
+        "name": "B",
+        "alias": [
+          "耗煤量"
+        ],
+        "unit": "t",
+        "required": true,
+        "label": "耗煤量 t"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "含硫率"
+        ],
+        "unit": "%",
+        "required": true,
+        "label": "含硫率 %"
+      },
+      {
+        "name": "eta",
+        "alias": [
+          "脱硫效率"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "脱硫效率 0-1"
+      }
+    ],
+    "expr": "B * S * 1.6 * (1 - eta)",
+    "output": {
+      "name": "G",
+      "unit": "t",
+      "label": "SO2排放量"
+    }
+  },
+  {
+    "id": "ventilation-rate",
+    "name": "车间通风换气量",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "大气预测",
+    "desc": "Q = G / (Cstd - Cbg)，G 污染物产生量(mg/h)、Cstd 允许浓度、Cbg 背景浓度(mg/m3)",
+    "inputs": [
+      {
+        "name": "G",
+        "alias": [
+          "污染物产生量"
+        ],
+        "unit": "mg/h",
+        "required": true,
+        "label": "产生量 mg/h"
+      },
+      {
+        "name": "Cstd",
+        "alias": [
+          "允许浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "允许浓度 mg/m3"
+      },
+      {
+        "name": "Cbg",
+        "alias": [
+          "背景浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "背景浓度 mg/m3"
+      }
+    ],
+    "expr": "G / (Cstd - Cbg)",
+    "output": {
+      "name": "Q",
+      "unit": "m3/h",
+      "label": "通风换气量"
+    }
+  },
+  {
+    "id": "sound-sum",
+    "name": "声压级合成（多声源叠加）",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声",
+    "desc": "L = 10*lg( sum(10^(Li/10)) )",
+    "inputs": [
+      {
+        "name": "Li",
+        "alias": [
+          "声级序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "各声源声级 dB"
+      }
+    ],
+    "expr": "10 * log10(sum([10**(l/10) for l in Li]))",
+    "output": {
+      "name": "L",
+      "unit": "dB",
+      "label": "合成声级"
+    }
+  },
+  {
+    "id": "ldn",
+    "name": "昼夜等效声级",
+    "standard": "通用",
+    "clause": "GB 3096-2008",
+    "calc_type": "噪声",
+    "desc": "Ldn = 10*lg((15*10^(Ld/10) + 9*10^((Ln+10)/10))/24)",
+    "inputs": [
+      {
+        "name": "Ld",
+        "alias": [
+          "昼间等效声级"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "昼间等效声级 dB"
+      },
+      {
+        "name": "Ln",
+        "alias": [
+          "夜间等效声级"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "夜间等效声级 dB"
+      }
+    ],
+    "expr": "10 * log10((15 * 10**(Ld/10) + 9 * 10**((Ln + 10)/10)) / 24)",
+    "output": {
+      "name": "Ldn",
+      "unit": "dB",
+      "label": "昼夜等效声级"
+    }
+  },
+  {
+    "id": "air-absorption",
+    "name": "空气吸收衰减",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声",
+    "desc": "A = alpha * r，alpha 空气吸收系数(dB/m)、r 传播距离(m)",
+    "inputs": [
+      {
+        "name": "alpha",
+        "alias": [
+          "吸收系数"
+        ],
+        "unit": "dB/m",
+        "required": true,
+        "label": "空气吸收系数 dB/m"
+      },
+      {
+        "name": "r",
+        "alias": [
+          "传播距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "传播距离 m"
+      }
+    ],
+    "expr": "alpha * r",
+    "output": {
+      "name": "A",
+      "unit": "dB",
+      "label": "空气吸收衰减量"
+    }
+  },
+  {
+    "id": "power-level",
+    "name": "声功率级换算",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声",
+    "desc": "Lw = Lp + 10*lg(S)，S 声源包络面积(m2)",
+    "inputs": [
+      {
+        "name": "Lp",
+        "alias": [
+          "声压级"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "声压级 dB"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "包络面积"
+        ],
+        "unit": "m2",
+        "required": true,
+        "label": "包络面积 m2"
+      }
+    ],
+    "expr": "Lp + 10 * log10(S)",
+    "output": {
+      "name": "Lw",
+      "unit": "dB",
+      "label": "声功率级"
+    }
+  },
+  {
+    "id": "waste-moisture",
+    "name": "固废含水率",
+    "standard": "通用",
+    "clause": "HJ 1222-2021",
+    "calc_type": "固废",
+    "desc": "omega = (m1 - m2) / m1 * 100（%），m1 湿重、m2 干重",
+    "inputs": [
+      {
+        "name": "m1",
+        "alias": [
+          "湿重"
+        ],
+        "unit": "g",
+        "required": true,
+        "label": "湿重 g"
+      },
+      {
+        "name": "m2",
+        "alias": [
+          "干重"
+        ],
+        "unit": "g",
+        "required": true,
+        "label": "干重 g"
+      }
+    ],
+    "expr": "(m1 - m2) / m1 * 100",
+    "output": {
+      "name": "omega",
+      "unit": "%",
+      "label": "含水率"
+    }
+  },
+  {
+    "id": "waste-reduction",
+    "name": "固废减量化率",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "固废",
+    "desc": "eta = (V1 - V2) / V1 * 100（%），处理前后体积",
+    "inputs": [
+      {
+        "name": "V1",
+        "alias": [
+          "处理前体积"
+        ],
+        "unit": "m3",
+        "required": true,
+        "label": "处理前体积"
+      },
+      {
+        "name": "V2",
+        "alias": [
+          "处理后体积"
+        ],
+        "unit": "m3",
+        "required": true,
+        "label": "处理后体积"
+      }
+    ],
+    "expr": "(V1 - V2) / V1 * 100",
+    "output": {
+      "name": "eta",
+      "unit": "%",
+      "label": "减量化率"
+    }
+  },
+  {
+    "id": "soil-enrichment",
+    "name": "土壤富集系数",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤",
+    "desc": "EF = Ci / Cr，Ci 元素含量、Cr 参考元素含量",
+    "inputs": [
+      {
+        "name": "Ci",
+        "alias": [
+          "元素含量"
+        ],
+        "unit": "mg/kg",
+        "required": true,
+        "label": "元素含量 mg/kg"
+      },
+      {
+        "name": "Cr",
+        "alias": [
+          "参考元素含量"
+        ],
+        "unit": "mg/kg",
+        "required": true,
+        "label": "参考元素含量 mg/kg"
+      }
+    ],
+    "expr": "Ci / Cr",
+    "output": {
+      "name": "EF",
+      "unit": "-",
+      "label": "富集系数"
+    }
+  },
+  {
+    "id": "dose-equivalent",
+    "name": "剂量当量",
+    "standard": "通用",
+    "clause": "GB 18871-2002",
+    "calc_type": "辐射",
+    "desc": "H = D * Q，D 吸收剂量(Gy)、Q 品质因数",
+    "inputs": [
+      {
+        "name": "D",
+        "alias": [
+          "吸收剂量"
+        ],
+        "unit": "Gy",
+        "required": true,
+        "label": "吸收剂量 Gy"
+      },
+      {
+        "name": "Q",
+        "alias": [
+          "品质因数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "品质因数"
+      }
+    ],
+    "expr": "D * Q",
+    "output": {
+      "name": "H",
+      "unit": "Sv",
+      "label": "剂量当量"
+    }
+  },
+  {
+    "id": "radioactive-decay",
+    "name": "放射性衰变",
+    "standard": "通用",
+    "clause": "GB 18871-2002",
+    "calc_type": "辐射",
+    "desc": "A = A0 * exp(-lam * t)",
+    "inputs": [
+      {
+        "name": "A0",
+        "alias": [
+          "初始活度"
+        ],
+        "unit": "Bq",
+        "required": true,
+        "label": "初始活度 Bq"
+      },
+      {
+        "name": "lam",
+        "alias": [
+          "衰变常数"
+        ],
+        "unit": "1/d",
+        "required": true,
+        "label": "衰变常数 1/d"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "时间 d"
+      }
+    ],
+    "expr": "A0 * math.exp(-lam * t)",
+    "output": {
+      "name": "A",
+      "unit": "Bq",
+      "label": "剩余活度"
+    }
+  },
+  {
+    "id": "half-life",
+    "name": "放射性半衰期",
+    "standard": "通用",
+    "clause": "GB 18871-2002",
+    "calc_type": "辐射",
+    "desc": "T = ln(2) / lam",
+    "inputs": [
+      {
+        "name": "lam",
+        "alias": [
+          "衰变常数"
+        ],
+        "unit": "1/d",
+        "required": true,
+        "label": "衰变常数 1/d"
+      }
+    ],
+    "expr": "math.log(2) / lam",
+    "output": {
+      "name": "T",
+      "unit": "d",
+      "label": "半衰期"
+    }
+  },
+  {
+    "id": "measurement-lower-limit",
+    "name": "测定下限",
+    "standard": "通用",
+    "clause": "HJ 168-2020",
+    "calc_type": "检出限",
+    "desc": "LOQ = 4 * MDL",
+    "inputs": [
+      {
+        "name": "MDL",
+        "alias": [
+          "检出限"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "方法检出限"
+      }
+    ],
+    "expr": "4 * MDL",
+    "output": {
+      "name": "LOQ",
+      "unit": "-",
+      "label": "测定下限"
+    }
+  },
+  {
+    "id": "relative-error",
+    "name": "相对误差",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "准确度",
+    "desc": "RE = (x - x0) / x0 * 100（%），x 测定值、x0 真值/标准值",
+    "inputs": [
+      {
+        "name": "x",
+        "alias": [
+          "测定值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测定值"
+      },
+      {
+        "name": "x0",
+        "alias": [
+          "真值",
+          "标准值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "真值"
+      }
+    ],
+    "expr": "(x - x0) / x0 * 100",
+    "output": {
+      "name": "RE",
+      "unit": "%",
+      "label": "相对误差"
+    }
+  },
+  {
+    "id": "compliance-rate",
+    "name": "达标率",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "r = npass / n * 100（%）",
+    "inputs": [
+      {
+        "name": "npass",
+        "alias": [
+          "达标次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "达标次数"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "总次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "总次数"
+      }
+    ],
+    "expr": "npass / n * 100",
+    "output": {
+      "name": "r",
+      "unit": "%",
+      "label": "达标率"
+    }
+  },
+  {
+    "id": "weighted-mean",
+    "name": "加权算术均值",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "xw = sum(wi*xi) / sum(wi)",
+    "inputs": [
+      {
+        "name": "wi",
+        "alias": [
+          "权重序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "权重序列"
+      },
+      {
+        "name": "xi",
+        "alias": [
+          "数值序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "数值序列"
+      }
+    ],
+    "expr": "sum([w * x for w, x in zip(wi, xi)]) / sum(wi)",
+    "output": {
+      "name": "xw",
+      "unit": "-",
+      "label": "加权均值"
+    }
+  },
+  {
+    "id": "geometric-mean",
+    "name": "几何均值",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "G = exp( sum(ln(xi)) / n )",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "数据序列（需>0）"
+      }
+    ],
+    "expr": "math.exp(sum([math.log(x) for x in xi]) / len(xi))",
+    "output": {
+      "name": "G",
+      "unit": "-",
+      "label": "几何均值"
+    }
+  },
+  {
+    "id": "median",
+    "name": "中位数",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "排序取中位（n 偶数取中间两数均值）",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "数据序列"
+      }
+    ],
+    "expr": "median(xi)",
+    "output": {
+      "name": "Md",
+      "unit": "-",
+      "label": "中位数"
+    }
+  },
+  {
+    "id": "shannon-index",
+    "name": "香农-维纳多样性指数",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "H = -sum(Pi * ln(Pi))，Pi 为各物种相对多度",
+    "inputs": [
+      {
+        "name": "Pi",
+        "alias": [
+          "相对多度序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "相对多度序列"
+      }
+    ],
+    "expr": "-1 * sum([p * math.log(p) for p in Pi])",
+    "output": {
+      "name": "H",
+      "unit": "-",
+      "label": "香农-维纳指数"
+    }
+  },
+  {
+    "id": "evenness-index",
+    "name": "均匀度指数",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "J = H / ln(S)，H 香农指数、S 物种数",
+    "inputs": [
+      {
+        "name": "H",
+        "alias": [
+          "香农指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "香农-维纳指数"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "物种数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "物种数"
+      }
+    ],
+    "expr": "H / math.log(S)",
+    "output": {
+      "name": "J",
+      "unit": "-",
+      "label": "均匀度"
+    }
+  },
+  {
+    "id": "dominance-index",
+    "name": "辛普森优势度指数",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "D = sum(Pi^2)",
+    "inputs": [
+      {
+        "name": "Pi",
+        "alias": [
+          "相对多度序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "相对多度序列"
+      }
+    ],
+    "expr": "sum([p * p for p in Pi])",
+    "output": {
+      "name": "D",
+      "unit": "-",
+      "label": "优势度"
+    }
+  },
+  {
+    "id": "vegetation-coverage",
+    "name": "植被覆盖度",
+    "standard": "通用",
+    "clause": "HJ 1167-2021",
+    "calc_type": "生态",
+    "desc": "FVC = (NDVI - min_v) / (max_v - min_v) * 100（%）",
+    "inputs": [
+      {
+        "name": "NDVI",
+        "alias": [
+          "植被指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "NDVI"
+      },
+      {
+        "name": "min_v",
+        "alias": [
+          "NDVI最小值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "NDVI 最小值"
+      },
+      {
+        "name": "max_v",
+        "alias": [
+          "NDVI最大值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "NDVI 最大值"
+      }
+    ],
+    "expr": "(NDVI - min_v) / (max_v - min_v) * 100",
+    "output": {
+      "name": "FVC",
+      "unit": "%",
+      "label": "植被覆盖度"
+    }
+  },
+  {
+    "id": "coefficient-variation",
+    "name": "变异系数",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "CV = s / xbar * 100（%）",
+    "inputs": [
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "xbar",
+        "alias": [
+          "均值",
+          "平均值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      }
+    ],
+    "expr": "s / xbar * 100",
+    "output": {
+      "name": "CV",
+      "unit": "%",
+      "label": "变异系数"
+    }
+  },
+  {
+    "id": "standard-error",
+    "name": "标准误",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "SE = s / sqrt(n)",
+    "inputs": [
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "样本数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "样本数"
+      }
+    ],
+    "expr": "s / sqrt(n)",
+    "output": {
+      "name": "SE",
+      "unit": "-",
+      "label": "标准误"
+    }
+  },
+  {
+    "id": "ci-upper",
+    "name": "均值置信区间上限",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "CI_up = xbar + t * s / sqrt(n)，t 为 t 分布临界值（95% 约 1.96 大样本）",
+    "inputs": [
+      {
+        "name": "xbar",
+        "alias": [
+          "均值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "t值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "t 临界值"
+      },
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "样本数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "样本数"
+      }
+    ],
+    "expr": "xbar + t * s / sqrt(n)",
+    "output": {
+      "name": "CI_up",
+      "unit": "-",
+      "label": "置信区间上限"
+    }
+  },
+  {
+    "id": "ci-lower",
+    "name": "均值置信区间下限",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "统计",
+    "desc": "CI_lo = xbar - t * s / sqrt(n)",
+    "inputs": [
+      {
+        "name": "xbar",
+        "alias": [
+          "均值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "t值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "t 临界值"
+      },
+      {
+        "name": "s",
+        "alias": [
+          "标准偏差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准偏差"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "样本数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "样本数"
+      }
+    ],
+    "expr": "xbar - t * s / sqrt(n)",
+    "output": {
+      "name": "CI_lo",
+      "unit": "-",
+      "label": "置信区间下限"
+    }
+  },
+  {
+    "id": "z-score",
+    "name": "标准正态值（Z 分数）",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "z = (x - mu) / sigma",
+    "inputs": [
+      {
+        "name": "x",
+        "alias": [
+          "测定值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测定值"
+      },
+      {
+        "name": "mu",
+        "alias": [
+          "均值",
+          "期望"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      },
+      {
+        "name": "sigma",
+        "alias": [
+          "标准差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准差"
+      }
+    ],
+    "expr": "(x - mu) / sigma",
+    "output": {
+      "name": "z",
+      "unit": "-",
+      "label": "Z 分数"
+    }
+  },
+  {
+    "id": "normal-cdf",
+    "name": "标准正态累积概率 Phi(z)",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "Phi(z) = P(X <= z)，Abramowitz-Stegun 近似",
+    "inputs": [
+      {
+        "name": "z",
+        "alias": [
+          "Z值",
+          "标准正态值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "Z 值"
+      }
+    ],
+    "expr": "norm_cdf(z)",
+    "output": {
+      "name": "Phi",
+      "unit": "-",
+      "label": "累积概率"
+    }
+  },
+  {
+    "id": "normal-pdf",
+    "name": "正态分布概率密度",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "f(x) = norm_pdf((x-mu)/sigma) / sigma",
+    "inputs": [
+      {
+        "name": "x",
+        "alias": [
+          "测定值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测定值"
+      },
+      {
+        "name": "mu",
+        "alias": [
+          "均值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "均值"
+      },
+      {
+        "name": "sigma",
+        "alias": [
+          "标准差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "标准差"
+      }
+    ],
+    "expr": "norm_pdf((x - mu) / sigma) / sigma",
+    "output": {
+      "name": "f",
+      "unit": "-",
+      "label": "概率密度"
+    }
+  },
+  {
+    "id": "normal-inv",
+    "name": "标准正态分位数（反函数）",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "z(p)，Acklam 近似，p 为累积概率 (0,1)",
+    "inputs": [
+      {
+        "name": "p",
+        "alias": [
+          "累积概率"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "累积概率 p"
+      }
+    ],
+    "expr": "norm_inv(p)",
+    "output": {
+      "name": "z",
+      "unit": "-",
+      "label": "分位数"
+    }
+  },
+  {
+    "id": "poisson-prob",
+    "name": "泊松分布概率",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "P(k) = lam^k * exp(-lam) / k!（放射性计数、微生物计数等）",
+    "inputs": [
+      {
+        "name": "lam",
+        "alias": [
+          "均值",
+          "lambda"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "期望 lambda"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "发生次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "发生次数 k"
+      }
+    ],
+    "expr": "(lam ** k) * math.exp(-lam) / math.factorial(int(k))",
+    "output": {
+      "name": "P",
+      "unit": "-",
+      "label": "概率"
+    }
+  },
+  {
+    "id": "binomial-prob",
+    "name": "二项分布概率",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "P(k) = C(n,k) * p^k * (1-p)^(n-k)",
+    "inputs": [
+      {
+        "name": "n",
+        "alias": [
+          "试验次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "试验次数 n"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "成功次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "成功次数 k"
+      },
+      {
+        "name": "p",
+        "alias": [
+          "成功概率"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "成功概率 p"
+      }
+    ],
+    "expr": "math.comb(int(n), int(k)) * p ** k * (1 - p) ** (n - k)",
+    "output": {
+      "name": "P",
+      "unit": "-",
+      "label": "概率"
+    }
+  },
+  {
+    "id": "exponential-prob",
+    "name": "指数分布生存概率",
+    "standard": "通用",
+    "clause": "GB/T 4882-2001",
+    "calc_type": "概率",
+    "desc": "P(X > x) = exp(-lam * x)",
+    "inputs": [
+      {
+        "name": "lam",
+        "alias": [
+          "速率参数"
+        ],
+        "unit": "1/h",
+        "required": true,
+        "label": "速率参数 lam"
+      },
+      {
+        "name": "x",
+        "alias": [
+          "时间"
+        ],
+        "unit": "h",
+        "required": true,
+        "label": "时间 x"
+      }
+    ],
+    "expr": "math.exp(-lam * x)",
+    "output": {
+      "name": "P",
+      "unit": "-",
+      "label": "生存概率"
+    }
+  },
+  {
+    "id": "grubbs-stat",
+    "name": "Grubbs 检验统计量",
+    "standard": "通用",
+    "clause": "GB/T 4883-2008",
+    "calc_type": "离群值",
+    "desc": "G = max|xi - xbar| / s，与临界值表比较判定离群值",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量数据序列"
+      }
+    ],
+    "expr": "grubbs_stat(xi)",
+    "output": {
+      "name": "G",
+      "unit": "-",
+      "label": "Grubbs 统计量"
+    }
+  },
+  {
+    "id": "grubbs-test",
+    "name": "Grubbs 离群值判定",
+    "standard": "通用",
+    "clause": "GB/T 4883-2008",
+    "calc_type": "离群值",
+    "desc": "G > Gc(alpha,n) 判为离群值（输出 1 离群 / 0 正常），内置 n=3..30 临界值表",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量数据序列"
+      },
+      {
+        "name": "alpha",
+        "alias": [
+          "显著性水平"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "显著性水平 0.05/0.01"
+      }
+    ],
+    "expr": "1 if grubbs_stat(xi) > gb4883_grubbs(len(xi), alpha) else 0",
+    "output": {
+      "name": "outlier",
+      "unit": "-",
+      "label": "1=离群 0=正常"
+    }
+  },
+  {
+    "id": "dixon-q",
+    "name": "Dixon 检验统计量",
+    "standard": "通用",
+    "clause": "GB/T 4883-2008",
+    "calc_type": "离群值",
+    "desc": "按 n 自动分段取 r10/r11/r21/r22 较大值",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量数据序列"
+      }
+    ],
+    "expr": "dixon_q(xi)",
+    "output": {
+      "name": "Q",
+      "unit": "-",
+      "label": "Dixon 统计量"
+    }
+  },
+  {
+    "id": "dixon-test",
+    "name": "Dixon 离群值判定",
+    "standard": "通用",
+    "clause": "GB/T 4883-2008",
+    "calc_type": "离群值",
+    "desc": "Q > Qc 判为离群值（输出 1/0），Qc 从 GB/T 8056/6379 临界值表查得输入",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "数据序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "测量数据序列"
+      },
+      {
+        "name": "qc",
+        "alias": [
+          "临界值"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "Dixon 临界值"
+      }
+    ],
+    "expr": "1 if dixon_q(xi) > qc else 0",
+    "output": {
+      "name": "outlier",
+      "unit": "-",
+      "label": "1=离群 0=正常"
+    }
+  },
+  {
+    "id": "fresnel-number",
+    "name": "菲涅耳数（声屏障）",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声预测",
+    "desc": "N = 2*(a+b-d)/(340/f)，a 声源至屏障顶、b 屏障顶至接收点、d 声源至接收点直线距离、f 频率",
+    "inputs": [
+      {
+        "name": "a",
+        "alias": [
+          "源至屏障顶"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "声源至屏障顶 m"
+      },
+      {
+        "name": "b",
+        "alias": [
+          "屏障顶至接收点"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "屏障顶至接收点 m"
+      },
+      {
+        "name": "d",
+        "alias": [
+          "声源至接收点"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "声源至接收点 m"
+      },
+      {
+        "name": "f",
+        "alias": [
+          "频率"
+        ],
+        "unit": "Hz",
+        "required": true,
+        "label": "频率 Hz"
+      }
+    ],
+    "expr": "2 * (a + b - d) / (340 / f)",
+    "output": {
+      "name": "N",
+      "unit": "-",
+      "label": "菲涅耳数"
+    }
+  },
+  {
+    "id": "barrier-attenuation",
+    "name": "声屏障插入衰减",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声预测",
+    "desc": "dL = 10*lg(3 + 20*N)（N >= -0.15 时，Maslennikov 近似）",
+    "inputs": [
+      {
+        "name": "N",
+        "alias": [
+          "菲涅耳数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "菲涅耳数"
+      }
+    ],
+    "expr": "10 * log10(3 + 20 * N)",
+    "output": {
+      "name": "dL",
+      "unit": "dB",
+      "label": "插入衰减"
+    }
+  },
+  {
+    "id": "L10",
+    "name": "统计声级 L10",
+    "standard": "通用",
+    "clause": "GB 3096-2008",
+    "calc_type": "噪声",
+    "desc": "累积百分声级：L10（10% 时间超过的声级，线性插值百分位）",
+    "inputs": [
+      {
+        "name": "Li",
+        "alias": [
+          "声级序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "瞬时声级序列 dB"
+      }
+    ],
+    "expr": "pct(Li, 10)",
+    "output": {
+      "name": "L10",
+      "unit": "dB",
+      "label": "L10"
+    }
+  },
+  {
+    "id": "L50",
+    "name": "统计声级 L50",
+    "standard": "通用",
+    "clause": "GB 3096-2008",
+    "calc_type": "噪声",
+    "desc": "累积百分声级 L50（中位数水平）",
+    "inputs": [
+      {
+        "name": "Li",
+        "alias": [
+          "声级序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "瞬时声级序列 dB"
+      }
+    ],
+    "expr": "pct(Li, 50)",
+    "output": {
+      "name": "L50",
+      "unit": "dB",
+      "label": "L50"
+    }
+  },
+  {
+    "id": "L90",
+    "name": "统计声级 L90",
+    "standard": "通用",
+    "clause": "GB 3096-2008",
+    "calc_type": "噪声",
+    "desc": "累积百分声级 L90（背景噪声水平）",
+    "inputs": [
+      {
+        "name": "Li",
+        "alias": [
+          "声级序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "瞬时声级序列 dB"
+      }
+    ],
+    "expr": "pct(Li, 90)",
+    "output": {
+      "name": "L90",
+      "unit": "dB",
+      "label": "L90"
+    }
+  },
+  {
+    "id": "protection-distance",
+    "name": "卫生防护距离（经验估算）",
+    "standard": "通用",
+    "clause": "GB/T 13201-91",
+    "calc_type": "防护距离",
+    "desc": "L = k * (Qc/(Cm*u))^(1/1.7)，经验估算；精确值须按 GB/T 13201 查表或预测软件复核",
+    "inputs": [
+      {
+        "name": "Qc",
+        "alias": [
+          "无组织排放量"
+        ],
+        "unit": "kg/h",
+        "required": true,
+        "label": "无组织排放量 kg/h"
+      },
+      {
+        "name": "Cm",
+        "alias": [
+          "浓度限值"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "浓度限值 mg/m3"
+      },
+      {
+        "name": "u",
+        "alias": [
+          "风速"
+        ],
+        "unit": "m/s",
+        "required": true,
+        "label": "风速 m/s"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "修正系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "修正系数（默认1）"
+      }
+    ],
+    "expr": "k * (Qc / (Cm * u)) ** (1 / 1.7)",
+    "output": {
+      "name": "L",
+      "unit": "m",
+      "label": "卫生防护距离"
+    }
+  },
+  {
+    "id": "soil-oral-dose",
+    "name": "土壤经口摄入暴露剂量",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "D = C*IR*EF*ED/(BW*AT)*1e-6（mg/(kg·d)），C 浓度 mg/kg、IR 摄入率 mg/d、EF 暴露频率 d/年、ED 暴露年限 年、BW 体重 kg、AT 平均暴露时间 d",
+    "inputs": [
+      {
+        "name": "C",
+        "alias": [
+          "土壤浓度"
+        ],
+        "unit": "mg/kg",
+        "required": true,
+        "label": "土壤浓度 mg/kg"
+      },
+      {
+        "name": "IR",
+        "alias": [
+          "摄入率"
+        ],
+        "unit": "mg/d",
+        "required": true,
+        "label": "摄入率 mg/d"
+      },
+      {
+        "name": "EF",
+        "alias": [
+          "暴露频率"
+        ],
+        "unit": "d/年",
+        "required": true,
+        "label": "暴露频率 d/年"
+      },
+      {
+        "name": "ED",
+        "alias": [
+          "暴露年限"
+        ],
+        "unit": "年",
+        "required": true,
+        "label": "暴露年限 年"
+      },
+      {
+        "name": "BW",
+        "alias": [
+          "体重"
+        ],
+        "unit": "kg",
+        "required": true,
+        "label": "体重 kg"
+      },
+      {
+        "name": "AT",
+        "alias": [
+          "平均暴露时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "平均暴露时间 d"
+      }
+    ],
+    "expr": "C * IR * EF * ED / (BW * AT) * 1e-6",
+    "output": {
+      "name": "D",
+      "unit": "mg/(kg·d)",
+      "label": "经口暴露剂量"
+    }
+  },
+  {
+    "id": "soil-dermal-dose",
+    "name": "土壤皮肤接触暴露剂量",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "D = C*SA*AF*EF*ED/(BW*AT)*1e-6，SA 暴露皮肤面积 cm2、AF 皮肤粘附因子 mg/cm2",
+    "inputs": [
+      {
+        "name": "C",
+        "alias": [
+          "土壤浓度"
+        ],
+        "unit": "mg/kg",
+        "required": true,
+        "label": "土壤浓度 mg/kg"
+      },
+      {
+        "name": "SA",
+        "alias": [
+          "皮肤面积"
+        ],
+        "unit": "cm2",
+        "required": true,
+        "label": "暴露皮肤面积 cm2"
+      },
+      {
+        "name": "AF",
+        "alias": [
+          "粘附因子"
+        ],
+        "unit": "mg/cm2",
+        "required": true,
+        "label": "皮肤粘附因子 mg/cm2"
+      },
+      {
+        "name": "EF",
+        "alias": [
+          "暴露频率"
+        ],
+        "unit": "d/年",
+        "required": true,
+        "label": "暴露频率 d/年"
+      },
+      {
+        "name": "ED",
+        "alias": [
+          "暴露年限"
+        ],
+        "unit": "年",
+        "required": true,
+        "label": "暴露年限 年"
+      },
+      {
+        "name": "BW",
+        "alias": [
+          "体重"
+        ],
+        "unit": "kg",
+        "required": true,
+        "label": "体重 kg"
+      },
+      {
+        "name": "AT",
+        "alias": [
+          "平均暴露时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "平均暴露时间 d"
+      }
+    ],
+    "expr": "C * SA * AF * EF * ED / (BW * AT) * 1e-6",
+    "output": {
+      "name": "D",
+      "unit": "mg/(kg·d)",
+      "label": "皮肤暴露剂量"
+    }
+  },
+  {
+    "id": "soil-inhalation-dose",
+    "name": "土壤呼吸吸入暴露剂量",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "D = C*PM10*IR*EF*ED/(BW*AT*PEF)，PM10 空气中颗粒物浓度 mg/m3、IR 呼吸率 m3/d、PEF 颗粒物排放因子 m3/kg",
+    "inputs": [
+      {
+        "name": "C",
+        "alias": [
+          "土壤浓度"
+        ],
+        "unit": "mg/kg",
+        "required": true,
+        "label": "土壤浓度 mg/kg"
+      },
+      {
+        "name": "PM10",
+        "alias": [
+          "PM10浓度"
+        ],
+        "unit": "mg/m3",
+        "required": true,
+        "label": "PM10 mg/m3"
+      },
+      {
+        "name": "IR",
+        "alias": [
+          "呼吸率"
+        ],
+        "unit": "m3/d",
+        "required": true,
+        "label": "呼吸率 m3/d"
+      },
+      {
+        "name": "EF",
+        "alias": [
+          "暴露频率"
+        ],
+        "unit": "d/年",
+        "required": true,
+        "label": "暴露频率 d/年"
+      },
+      {
+        "name": "ED",
+        "alias": [
+          "暴露年限"
+        ],
+        "unit": "年",
+        "required": true,
+        "label": "暴露年限 年"
+      },
+      {
+        "name": "BW",
+        "alias": [
+          "体重"
+        ],
+        "unit": "kg",
+        "required": true,
+        "label": "体重 kg"
+      },
+      {
+        "name": "AT",
+        "alias": [
+          "平均暴露时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "平均暴露时间 d"
+      },
+      {
+        "name": "PEF",
+        "alias": [
+          "颗粒物排放因子"
+        ],
+        "unit": "m3/kg",
+        "required": true,
+        "label": "排放因子 m3/kg"
+      }
+    ],
+    "expr": "C * PM10 * IR * EF * ED / (BW * AT * PEF)",
+    "output": {
+      "name": "D",
+      "unit": "mg/(kg·d)",
+      "label": "吸入暴露剂量"
+    }
+  },
+  {
+    "id": "carcinogenic-risk",
+    "name": "致癌风险",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "R = LADD * SF，LADD 终生日均暴露剂量 mg/(kg·d)、SF 致癌斜率因子 kg·d/mg",
+    "inputs": [
+      {
+        "name": "LADD",
+        "alias": [
+          "终生日均剂量"
+        ],
+        "unit": "mg/(kg·d)",
+        "required": true,
+        "label": "终生日均暴露剂量"
+      },
+      {
+        "name": "SF",
+        "alias": [
+          "致癌斜率因子"
+        ],
+        "unit": "kg·d/mg",
+        "required": true,
+        "label": "致癌斜率因子"
+      }
+    ],
+    "expr": "LADD * SF",
+    "output": {
+      "name": "R",
+      "unit": "-",
+      "label": "致癌风险"
+    }
+  },
+  {
+    "id": "hazard-quotient",
+    "name": "危害商",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "HQ = ADD / RfD，ADD 日均暴露剂量、RfD 参考剂量",
+    "inputs": [
+      {
+        "name": "ADD",
+        "alias": [
+          "日均暴露剂量"
+        ],
+        "unit": "mg/(kg·d)",
+        "required": true,
+        "label": "日均暴露剂量"
+      },
+      {
+        "name": "RfD",
+        "alias": [
+          "参考剂量"
+        ],
+        "unit": "mg/(kg·d)",
+        "required": true,
+        "label": "参考剂量"
+      }
+    ],
+    "expr": "ADD / RfD",
+    "output": {
+      "name": "HQ",
+      "unit": "-",
+      "label": "危害商"
+    }
+  },
+  {
+    "id": "risk-cleanup-target",
+    "name": "致癌修复目标值（反算）",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "RBC = TR / (SF * IF)，TR 目标风险（如 1e-6）、IF 单位浓度终生日均暴露剂量（LADD@C=1）",
+    "inputs": [
+      {
+        "name": "TR",
+        "alias": [
+          "目标风险"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "目标风险（如1e-6）"
+      },
+      {
+        "name": "SF",
+        "alias": [
+          "致癌斜率因子"
+        ],
+        "unit": "kg·d/mg",
+        "required": true,
+        "label": "致癌斜率因子"
+      },
+      {
+        "name": "IF",
+        "alias": [
+          "单位浓度剂量"
+        ],
+        "unit": "kg·d/mg",
+        "required": true,
+        "label": "单位浓度终生日均剂量"
+      }
+    ],
+    "expr": "TR / (SF * IF)",
+    "output": {
+      "name": "RBC",
+      "unit": "mg/kg",
+      "label": "致癌修复目标值"
+    }
+  },
+  {
+    "id": "hazard-cleanup-target",
+    "name": "非致癌修复目标值（反算）",
+    "standard": "通用",
+    "clause": "HJ 25.3-2019",
+    "calc_type": "土壤风险评估",
+    "desc": "RBC = THQ * RfD / IADD，THQ 目标危害商（如1）、IADD 单位浓度日均暴露剂量（ADD@C=1）",
+    "inputs": [
+      {
+        "name": "THQ",
+        "alias": [
+          "目标危害商"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "目标危害商（默认1）"
+      },
+      {
+        "name": "RfD",
+        "alias": [
+          "参考剂量"
+        ],
+        "unit": "mg/(kg·d)",
+        "required": true,
+        "label": "参考剂量"
+      },
+      {
+        "name": "IADD",
+        "alias": [
+          "单位浓度剂量"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "单位浓度日均剂量"
+      }
+    ],
+    "expr": "THQ * RfD / IADD",
+    "output": {
+      "name": "RBC",
+      "unit": "mg/kg",
+      "label": "非致癌修复目标值"
+    }
+  },
+  {
+    "id": "darcy-law",
+    "name": "达西定律（地下水流量）",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "Q = K * A * I，K 渗透系数 m/d、A 过水断面面积 m2、I 水力坡度",
+    "inputs": [
+      {
+        "name": "K",
+        "alias": [
+          "渗透系数"
+        ],
+        "unit": "m/d",
+        "required": true,
+        "label": "渗透系数 m/d"
+      },
+      {
+        "name": "A",
+        "alias": [
+          "过水断面面积"
+        ],
+        "unit": "m2",
+        "required": true,
+        "label": "过水断面面积 m2"
+      },
+      {
+        "name": "I",
+        "alias": [
+          "水力坡度"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "水力坡度"
+      }
+    ],
+    "expr": "K * A * I",
+    "output": {
+      "name": "Q",
+      "unit": "m3/d",
+      "label": "地下水流量"
+    }
+  },
+  {
+    "id": "dispersion-1d",
+    "name": "一维对流弥散浓度",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "C = C0/2 * erfc((x - v*t)/(2*sqrt(DL*t)))，瞬时注入",
+    "inputs": [
+      {
+        "name": "C0",
+        "alias": [
+          "初始浓度"
+        ],
+        "unit": "mg/L",
+        "required": true,
+        "label": "初始浓度"
+      },
+      {
+        "name": "x",
+        "alias": [
+          "距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "下游距离 m"
+      },
+      {
+        "name": "v",
+        "alias": [
+          "流速"
+        ],
+        "unit": "m/d",
+        "required": true,
+        "label": "实际流速 m/d"
+      },
+      {
+        "name": "DL",
+        "alias": [
+          "纵向弥散系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "纵向弥散系数 m2/d"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "时间 d"
+      }
+    ],
+    "expr": "C0 / 2 * math.erfc((x - v * t) / (2 * math.sqrt(DL * t)))",
+    "output": {
+      "name": "C",
+      "unit": "mg/L",
+      "label": "弥散浓度"
+    }
+  },
+  {
+    "id": "theis-u",
+    "name": "泰斯井函数参数 u",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "u = r^2 * S / (4 * T * t)，r 观测距离、S 贮水系数、T 导水系数、t 抽水时间",
+    "inputs": [
+      {
+        "name": "r",
+        "alias": [
+          "观测距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "观测距离 m"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "贮水系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "贮水系数"
+      },
+      {
+        "name": "T",
+        "alias": [
+          "导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "导水系数 m2/d"
+      },
+      {
+        "name": "t",
+        "alias": [
+          "抽水时间"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "抽水时间 d"
+      }
+    ],
+    "expr": "r**2 * S / (4 * T * t)",
+    "output": {
+      "name": "u",
+      "unit": "-",
+      "label": "井函数参数"
+    }
+  },
+  {
+    "id": "theis-well-function",
+    "name": "泰斯井函数 W(u)",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "W(u) = -gamma - ln(u) + 级数（级数展开）",
+    "inputs": [
+      {
+        "name": "u",
+        "alias": [
+          "井函数参数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "井函数参数 u"
+      }
+    ],
+    "expr": "well_function(u)",
+    "output": {
+      "name": "W",
+      "unit": "-",
+      "label": "井函数"
+    }
+  },
+  {
+    "id": "theis-drawdown",
+    "name": "泰斯公式降深",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "s = Q * W(u) / (4 * pi * T)，Q 抽水量、T 导水系数",
+    "inputs": [
+      {
+        "name": "Q",
+        "alias": [
+          "抽水量"
+        ],
+        "unit": "m3/d",
+        "required": true,
+        "label": "抽水量 m3/d"
+      },
+      {
+        "name": "T",
+        "alias": [
+          "导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "导水系数 m2/d"
+      },
+      {
+        "name": "u",
+        "alias": [
+          "井函数参数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "井函数参数 u"
+      }
+    ],
+    "expr": "Q * well_function(u) / (4 * math.pi * T)",
+    "output": {
+      "name": "s",
+      "unit": "m",
+      "label": "降深"
+    }
+  },
+  {
+    "id": "odor-concentration",
+    "name": "臭气浓度（稀释级数）",
+    "standard": "通用",
+    "clause": "GB/T 14675-1993",
+    "calc_type": "恶臭",
+    "desc": "C = 2^n，n 为稀释级数（三点比较式袋法）",
+    "inputs": [
+      {
+        "name": "n",
+        "alias": [
+          "稀释级数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "稀释级数 n"
+      }
+    ],
+    "expr": "2 ** n",
+    "output": {
+      "name": "C",
+      "unit": "-",
+      "label": "臭气浓度（稀释倍数）"
+    }
+  },
+  {
+    "id": "odor-dilution",
+    "name": "臭气浓度（稀释倍数几何均值）",
+    "standard": "通用",
+    "clause": "GB/T 14675-1993",
+    "calc_type": "恶臭",
+    "desc": "C = 6 名嗅辨员稀释倍数序列的几何均值",
+    "inputs": [
+      {
+        "name": "xi",
+        "alias": [
+          "稀释倍数序列"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "嗅辨稀释倍数序列"
+      }
+    ],
+    "expr": "math.exp(sum([math.log(x) for x in xi]) / len(xi))",
+    "output": {
+      "name": "C",
+      "unit": "-",
+      "label": "臭气浓度"
+    }
+  },
+  {
+    "id": "margalef-index",
+    "name": "Margalef 丰富度指数",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "D = (S - 1) / ln(N)，S 物种数、N 个体总数",
+    "inputs": [
+      {
+        "name": "S",
+        "alias": [
+          "物种数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "物种数"
+      },
+      {
+        "name": "N",
+        "alias": [
+          "个体总数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "个体总数"
+      }
+    ],
+    "expr": "(S - 1) / math.log(N)",
+    "output": {
+      "name": "D",
+      "unit": "-",
+      "label": "丰富度"
+    }
+  },
+  {
+    "id": "pielou-evenness",
+    "name": "Pielou 均匀度",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "J = H / ln(S)，与均匀度指数等价（别名公式）",
+    "inputs": [
+      {
+        "name": "H",
+        "alias": [
+          "香农指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "香农-维纳指数"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "物种数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "物种数"
+      }
+    ],
+    "expr": "H / math.log(S)",
+    "output": {
+      "name": "J",
+      "unit": "-",
+      "label": "均匀度"
+    }
+  },
+  {
+    "id": "diversity-t",
+    "name": "多样性 t 检验",
+    "standard": "通用",
+    "clause": "HJ 623-2011",
+    "calc_type": "生态",
+    "desc": "t = (H1 - H2) / sqrt(VH1 + VH2)，H 香农指数、VH 指数方差",
+    "inputs": [
+      {
+        "name": "H1",
+        "alias": [
+          "群落1指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "群落1 香农指数"
+      },
+      {
+        "name": "H2",
+        "alias": [
+          "群落2指数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "群落2 香农指数"
+      },
+      {
+        "name": "VH1",
+        "alias": [
+          "群落1方差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "群落1 指数方差"
+      },
+      {
+        "name": "VH2",
+        "alias": [
+          "群落2方差"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "群落2 指数方差"
+      }
+    ],
+    "expr": "(H1 - H2) / sqrt(VH1 + VH2)",
+    "output": {
+      "name": "t",
+      "unit": "-",
+      "label": "t 统计量"
+    }
+  },
+  {
+    "id": "hvl",
+    "name": "辐射半值层",
+    "standard": "通用",
+    "clause": "GB 18871-2002",
+    "calc_type": "辐射",
+    "desc": "HVL = ln(2) / mu，mu 线性衰减系数",
+    "inputs": [
+      {
+        "name": "mu",
+        "alias": [
+          "线性衰减系数"
+        ],
+        "unit": "1/cm",
+        "required": true,
+        "label": "线性衰减系数 1/cm"
+      }
+    ],
+    "expr": "math.log(2) / mu",
+    "output": {
+      "name": "HVL",
+      "unit": "cm",
+      "label": "半值层"
+    }
+  },
+  {
+    "id": "inverse-square",
+    "name": "辐射距离平方反比",
+    "standard": "通用",
+    "clause": "GB 18871-2002",
+    "calc_type": "辐射",
+    "desc": "I = I0 * (d0/d)^2，I0 参考距离 d0 处剂量率",
+    "inputs": [
+      {
+        "name": "I0",
+        "alias": [
+          "参考剂量率"
+        ],
+        "unit": "uSv/h",
+        "required": true,
+        "label": "参考距离处剂量率 uSv/h"
+      },
+      {
+        "name": "d0",
+        "alias": [
+          "参考距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "参考距离 m"
+      },
+      {
+        "name": "d",
+        "alias": [
+          "目标距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "目标距离 m"
+      }
+    ],
+    "expr": "I0 * (d0 / d) ** 2",
+    "output": {
+      "name": "I",
+      "unit": "uSv/h",
+      "label": "目标距离剂量率"
+    }
+  },
+  {
+    "id": "kurze-anderson-il",
+    "name": "声屏障插入损失（Kurze-Anderson）",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声预测",
+    "desc": "IL = 10*lg(20*N)，适用于 N > 0.2 的高菲涅耳数范围",
+    "inputs": [
+      {
+        "name": "N",
+        "alias": [
+          "菲涅耳数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "菲涅耳数"
+      }
+    ],
+    "expr": "10 * log10(20 * N)",
+    "output": {
+      "name": "IL",
+      "unit": "dB",
+      "label": "插入损失"
+    }
+  },
+  {
+    "id": "barrier-il-refined",
+    "name": "声屏障插入损失（双峰效应细算）",
+    "standard": "通用",
+    "clause": "HJ 2.4-2021",
+    "calc_type": "噪声预测",
+    "desc": "IL = min(10*lg(20*N), cap)，cap 为大菲涅耳数双峰效应的插入损失上限（常用 20-24 dB）",
+    "inputs": [
+      {
+        "name": "N",
+        "alias": [
+          "菲涅耳数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "菲涅耳数"
+      },
+      {
+        "name": "cap",
+        "alias": [
+          "上限"
+        ],
+        "unit": "dB",
+        "required": true,
+        "label": "插入损失上限 dB"
+      }
+    ],
+    "expr": "min(10 * log10(20 * N), cap)",
+    "output": {
+      "name": "IL",
+      "unit": "dB",
+      "label": "插入损失"
+    }
+  },
+  {
+    "id": "groundwater-nonsteady",
+    "name": "地下水非稳定流数值解（显式差分）",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "一维承压含水层 @H/@t = a*@2H/@x2（a=T/S）显式有限差分；H0 初始水头剖面列表、L 域长、t_total 历时、nx 节点数、nt 时间步；返回探针（默认中点）最终水头；要求稳定性 r=a·dt/dx2 <= 0.5",
+    "inputs": [
+      {
+        "name": "H0",
+        "alias": [
+          "初始水头剖面"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "初始水头分布列表"
+      },
+      {
+        "name": "T",
+        "alias": [
+          "导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "导水系数 m2/d"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "贮水系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "贮水系数"
+      },
+      {
+        "name": "L",
+        "alias": [
+          "域长"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "计算域长度 m"
+      },
+      {
+        "name": "t_total",
+        "alias": [
+          "历时"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "模拟历时 d"
+      },
+      {
+        "name": "nx",
+        "alias": [
+          "节点数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "空间节点数"
+      },
+      {
+        "name": "nt",
+        "alias": [
+          "时间步数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "时间步数"
+      }
+    ],
+    "expr": "gw_explicit(H0, T, S, L, t_total, nx, nt)",
+    "output": {
+      "name": "H",
+      "unit": "m",
+      "label": "探针处最终水头"
+    }
+  },
+  {
+    "id": "monte-carlo",
+    "name": "蒙特卡洛不确定度传播",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012 附录 C",
+    "calc_type": "不确定度",
+    "desc": "expr 为计算表达式（如 'a*b'、'a/b'），params 为参数分布字典（如 {'a':[10,0.1],'b':[2,0.05]}，均值与标准差），n 抽样次数、k 包含因子；输出均值/标准差/扩展不确定度 u95",
+    "inputs": [
+      {
+        "name": "expr",
+        "alias": [
+          "表达式"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "计算表达式"
+      },
+      {
+        "name": "params",
+        "alias": [
+          "参数分布"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "参数均值与标准差"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "抽样次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "抽样次数"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "包含因子"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "包含因子 k"
+      }
+    ],
+    "expr": "mc_uncertainty(expr, params, n, k)",
+    "output": {
+      "name": "MC",
+      "unit": "-",
+      "label": "不确定度传播结果"
+    }
+  },
+  {
+    "id": "groundwater-implicit",
+    "name": "地下水非稳定流隐式解",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "一维承压含水层隐式差分（Thomas 算法，无条件稳定，默认 Crank-Nicolson 格式、中点探针）",
+    "inputs": [
+      {
+        "name": "H0",
+        "alias": [
+          "初始水头剖面"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "初始水头分布列表"
+      },
+      {
+        "name": "T",
+        "alias": [
+          "导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "导水系数 m2/d"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "贮水系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "贮水系数"
+      },
+      {
+        "name": "L",
+        "alias": [
+          "域长"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "计算域长度 m"
+      },
+      {
+        "name": "t_total",
+        "alias": [
+          "历时"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "模拟历时 d"
+      },
+      {
+        "name": "nx",
+        "alias": [
+          "节点数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "空间节点数"
+      },
+      {
+        "name": "nt",
+        "alias": [
+          "时间步数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "时间步数"
+      }
+    ],
+    "expr": "gw_implicit(H0, T, S, L, t_total, nx, nt)",
+    "output": {
+      "name": "H",
+      "unit": "m",
+      "label": "探针处最终水头"
+    }
+  },
+  {
+    "id": "groundwater-adi",
+    "name": "地下水非稳定流二维 ADI",
+    "standard": "通用",
+    "clause": "HJ 610-2016",
+    "calc_type": "地下水",
+    "desc": "二维承压含水层交替方向隐式（Peaceman-Rachford，无条件稳定）；H0 二维水头网格 [ny][nx]，四边 Dirichlet 固定",
+    "inputs": [
+      {
+        "name": "H0",
+        "alias": [
+          "二维水头网格"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "二维初始水头网格"
+      },
+      {
+        "name": "Tx",
+        "alias": [
+          "x向导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "x 向导水系数 m2/d"
+      },
+      {
+        "name": "Ty",
+        "alias": [
+          "y向导水系数"
+        ],
+        "unit": "m2/d",
+        "required": true,
+        "label": "y 向导水系数 m2/d"
+      },
+      {
+        "name": "S",
+        "alias": [
+          "贮水系数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "贮水系数"
+      },
+      {
+        "name": "Lx",
+        "alias": [
+          "x向域长"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "x 向域长 m"
+      },
+      {
+        "name": "Ly",
+        "alias": [
+          "y向域长"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "y 向域长 m"
+      },
+      {
+        "name": "t_total",
+        "alias": [
+          "历时"
+        ],
+        "unit": "d",
+        "required": true,
+        "label": "模拟历时 d"
+      },
+      {
+        "name": "nx",
+        "alias": [
+          "x向节点数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "x 向节点数"
+      },
+      {
+        "name": "ny",
+        "alias": [
+          "y向节点数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "y 向节点数"
+      },
+      {
+        "name": "nt",
+        "alias": [
+          "时间步数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "时间步数"
+      }
+    ],
+    "expr": "gw_adi(H0, Tx, Ty, S, Lx, Ly, t_total, nx, ny, nt)",
+    "output": {
+      "name": "H",
+      "unit": "m",
+      "label": "探针处最终水头"
+    }
+  },
+  {
+    "id": "mc-sensitivity",
+    "name": "不确定度灵敏度分析",
+    "standard": "通用",
+    "clause": "JJF 1059.1-2012",
+    "calc_type": "不确定度",
+    "desc": "一阶局部灵敏度系数 df/dxi（中心差分）+ 蒙特卡洛传播 + 相对贡献率 (dc*sd)^2/Σ*100%；params 支持正态[均值,标准差]/uniform{low,high}/triangular{low,mode,high}",
+    "inputs": [
+      {
+        "name": "expr",
+        "alias": [
+          "表达式"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "计算表达式"
+      },
+      {
+        "name": "params",
+        "alias": [
+          "参数分布"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "参数分布字典"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "抽样次数"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "抽样次数"
+      },
+      {
+        "name": "k",
+        "alias": [
+          "包含因子"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "包含因子 k"
+      }
+    ],
+    "expr": "mc_sensitivity(expr, params, n, k)",
+    "output": {
+      "name": "S",
+      "unit": "-",
+      "label": "灵敏度分析结果"
+    }
+  },
+  {
+    "id": "carbon-emission-factor",
+    "name": "碳排放因子法",
+    "standard": "通用",
+    "clause": "ISO 14064-1",
+    "calc_type": "碳排放",
+    "desc": "E = AD x EF（活动数据 x 排放因子），范围1/2/3 通用",
+    "inputs": [
+      {
+        "name": "AD",
+        "alias": [
+          "活动数据",
+          "消耗量"
+        ],
+        "unit": "t/kWh/GJ",
+        "required": true,
+        "label": "活动数据"
+      },
+      {
+        "name": "EF",
+        "alias": [
+          "排放因子"
+        ],
+        "unit": "tCO2e/单位",
+        "required": true,
+        "label": "排放因子"
+      }
+    ],
+    "expr": "AD * EF",
+    "output": {
+      "name": "E",
+      "unit": "tCO2e",
+      "label": "碳排放量"
+    }
+  },
+  {
+    "id": "fuel-burn-emission",
+    "name": "燃料燃烧排放",
+    "standard": "通用",
+    "clause": "IPCC 2006",
+    "calc_type": "碳排放",
+    "desc": "E = FC x NCV x CC x OF x 44/12（燃料消耗x低位发热量x碳含量x碳氧化率）",
+    "inputs": [
+      {
+        "name": "FC",
+        "alias": [
+          "燃料消耗量"
+        ],
+        "unit": "t/万Nm3",
+        "required": true,
+        "label": "燃料消耗量"
+      },
+      {
+        "name": "NCV",
+        "alias": [
+          "低位发热量"
+        ],
+        "unit": "GJ/单位",
+        "required": true,
+        "label": "低位发热量"
+      },
+      {
+        "name": "CC",
+        "alias": [
+          "单位热值含碳量"
+        ],
+        "unit": "tC/GJ",
+        "required": true,
+        "label": "含碳量"
+      },
+      {
+        "name": "OF",
+        "alias": [
+          "碳氧化率"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "碳氧化率"
+      }
+    ],
+    "expr": "FC * NCV * CC * OF * 44 / 12",
+    "output": {
+      "name": "E",
+      "unit": "tCO2",
+      "label": "燃烧排放量"
+    }
+  },
+  {
+    "id": "power-indirect-emission",
+    "name": "电力间接排放",
+    "standard": "通用",
+    "clause": "国家电网排放因子",
+    "calc_type": "碳排放",
+    "desc": "E = 外购电量 x 电网排放因子（区域电网年度发布值）",
+    "inputs": [
+      {
+        "name": "EC",
+        "alias": [
+          "外购电量"
+        ],
+        "unit": "kWh/MWh",
+        "required": true,
+        "label": "外购电量"
+      },
+      {
+        "name": "EF",
+        "alias": [
+          "电网排放因子"
+        ],
+        "unit": "tCO2/MWh",
+        "required": true,
+        "label": "电网排放因子"
+      }
+    ],
+    "expr": "EC * EF",
+    "output": {
+      "name": "E",
+      "unit": "tCO2",
+      "label": "电力间接排放"
+    }
+  },
+  {
+    "id": "gwp-co2e",
+    "name": "GWP 折算 CO2e",
+    "standard": "通用",
+    "clause": "IPCC AR6 GWP100",
+    "calc_type": "碳排放",
+    "desc": "CO2e = sum(气体排放量 x GWP100)；CH4=27.9, N2O=273",
+    "inputs": [
+      {
+        "name": "GAS",
+        "alias": [
+          "气体排放量",
+          "CH4",
+          "N2O"
+        ],
+        "unit": "t",
+        "required": true,
+        "label": "各温室气体排放量"
+      },
+      {
+        "name": "GWP",
+        "alias": [
+          "全球增温潜势"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "GWP100 系数"
+      }
+    ],
+    "expr": "GAS * GWP",
+    "output": {
+      "name": "CO2e",
+      "unit": "tCO2e",
+      "label": "二氧化碳当量"
+    }
+  },
+  {
+    "id": "carbon-peak-target",
+    "name": "碳达峰年度目标分解",
+    "standard": "通用",
+    "clause": "",
+    "calc_type": "碳排放",
+    "desc": "达标年排放 = 基期排放 x (1 + 年均增长率)^(年数)；分解至年度强度目标",
+    "inputs": [
+      {
+        "name": "E0",
+        "alias": [
+          "基期排放"
+        ],
+        "unit": "tCO2e",
+        "required": true,
+        "label": "基期排放"
+      },
+      {
+        "name": "r",
+        "alias": [
+          "年均增长率"
+        ],
+        "unit": "-",
+        "required": true,
+        "label": "年均增长率"
+      },
+      {
+        "name": "n",
+        "alias": [
+          "年数"
+        ],
+        "unit": "a",
+        "required": true,
+        "label": "目标年数"
+      }
+    ],
+    "expr": "E0 * (1 + r) ** n",
+    "output": {
+      "name": "E",
+      "unit": "tCO2e",
+      "label": "目标年排放量"
+    }
+  },
+  {
+    "id": "gaussian-puff-simplified",
+    "name": "高斯烟团扩散（简化）",
+    "standard": "通用",
+    "clause": "HJ 169-2018",
+    "calc_type": "应急扩散",
+    "desc": "下风向中心浓度 C = Q/(2πσyσz u) exp(-0.5(z/u)^2...)（简化烟团，稳恒点源 Pasquill 类）",
+    "inputs": [
+      {
+        "name": "Q",
+        "alias": [
+          "源强排放速率"
+        ],
+        "unit": "g/s",
+        "required": true,
+        "label": "源强"
+      },
+      {
+        "name": "u",
+        "alias": [
+          "风速"
+        ],
+        "unit": "m/s",
+        "required": true,
+        "label": "风速"
+      },
+      {
+        "name": "x",
+        "alias": [
+          "下风向距离"
+        ],
+        "unit": "m",
+        "required": true,
+        "label": "下风向距离"
+      }
+    ],
+    "expr": "Q / (2 * 3.14159 * u * x * x) * 1000",
+    "output": {
+      "name": "C",
+      "unit": "mg/m3",
+      "label": "地面浓度（简化）"
+    }
+  },
+  {
+    "id": "emergency-pool-volume",
+    "name": "应急池容量估算",
+    "standard": "通用",
+    "clause": "HJ 169-2018",
+    "calc_type": "应急容量",
+    "desc": "V = 事故废水 + 消防废水 + 事故降雨（V1+V2+V3 法）",
+    "inputs": [
+      {
+        "name": "V1",
+        "alias": [
+          "事故废水量"
+        ],
+        "unit": "m3",
+        "required": true,
+        "label": "收集系统事故废水"
+      },
+      {
+        "name": "V2",
+        "alias": [
+          "消防废水量"
+        ],
+        "unit": "m3",
+        "required": true,
+        "label": "消防废水"
+      },
+      {
+        "name": "V3",
+        "alias": [
+          "事故降雨量"
+        ],
+        "unit": "m3",
+        "required": true,
+        "label": "事故时降雨"
+      }
+    ],
+    "expr": "V1 + V2 + V3",
+    "output": {
+      "name": "V",
+      "unit": "m3",
+      "label": "应急池最小容积"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+# 生态Agent - SearXNG 自托管元搜索部署
+# 用法: 双击 start-searxng.bat 或手动执行:
+#   docker compose -f searxng-docker-compose.yml up -d
+# 启动后 Agent 内配置 base_url=http://localhost:8888 即可启用(默认值)
+services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8888:8080"   # 仅本机访问, 如需局域网开放改为 "8888:8080"
+    volumes:
+      - ./config:/etc/searxng
+      - ./data:/var/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE

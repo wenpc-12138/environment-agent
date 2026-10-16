@@ -1,0 +1,48 @@
+# CMA 资质合规规则包（M12，UPGRADE_PLAN §M12）
+# 五类规则：能力表 / 方法标准 / 人员资格 / 设备校准 / 报告要素
+# 语义：报告文本包含 keywords 中任一关键词即视为该规则满足（passed）；
+#       否则记为违规。mandatory=true 的规则违规记 P1（应修），
+#       其余记 P2（建议）。P0 由引擎在检查已废止标准时产生。
+
+rules:
+  - id: CMA-001
+    category: 能力表
+    mandatory: true
+    text: 报告应声明本单位检验检测能力表（CMA 附表）
+    keywords: [能力表, 检测能力, CMA, 资质附表]
+
+  - id: CMA-002
+    category: 方法标准
+    mandatory: true
+    text: 监测方法应引用现行有效标准，方法编号与标准一致
+    keywords: [方法, GB, HJ, 依据, 标准]
+
+  - id: CMA-003
+    category: 人员资格
+    mandatory: false
+    text: 报告应列明采样/分析人员上岗资格或授权签字人
+    keywords: [人员, 上岗, 资格, 授权签字人, 培训]
+
+  - id: CMA-004
+    category: 设备校准
+    mandatory: true
+    text: 关键仪器应标注校准/检定有效期，且在有效期内
+    keywords: [校准, 检定, 有效期, 仪器, 设备]
+
+  - id: CMA-005
+    category: 报告要素
+    mandatory: true
+    text: 报告应包含必备要素：监测目的、点位、频次、结果与结论
+    keywords: [监测目的, 点位, 频次, 监测结果, 结论]
+
+  - id: CMA-006
+    category: 报告要素
+    mandatory: true
+    text: 报告应加盖 CMA 章并经授权签字人签发
+    keywords: [CMA章, 盖章, 签发, 授权签字]
+
+  - id: CMA-007
+    category: 能力表
+    mandatory: false
+    text: 检出限与测定范围应在能力表覆盖范围内
+    keywords: [检出限, 测定范围, 能力表, 测量范围]

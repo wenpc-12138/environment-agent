@@ -1,0 +1,69 @@
+# ---- 密钥与本地配置（绝不入库）----
+.env
+.env.*
+!.env.example
+
+# ---- 运行时数据：数据库 / 备份 / 上传 / 生成物 ----
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/backups/
+data/uploads/
+data/task_outputs/
+data/kb/
+data/learn/
+data/reports/
+data/logs/
+data/agent_market/
+data/_qc_test/
+data/convert_md/
+db/*.db
+src/data/
+
+# 例外：随仓库分发的默认配置与演示技能
+!data/searxng.json
+!data/report_types.json
+!data/agents/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+.coverage
+htmlcov/
+
+# ---- Node / 前端构建 ----
+node_modules/
+web/.vite/
+web/dist/
+.npm/
+
+# ---- 本地运行时（SearXNG 部署、OCR 模型等）----
+runtime/
+extras/searxng/searxng/
+
+# ---- 日志与临时文件（仅根目录草稿，锚定 / 以免误伤 __init__.py）----
+*.log
+/_*.log
+/_*.txt
+/_*.py
+/_*.png
+/_*.json
+/_*.md
+clean.log
+h.log
+w.log
+
+# ---- 编辑器 / 系统 ----
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# 报告学习注册表（运行时生成，用户数据）
+data/report_learning.json
